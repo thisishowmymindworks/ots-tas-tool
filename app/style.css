@@ -1,0 +1,134 @@
+body{
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 1.5em;
+}
+
+#flash_container_large {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255,255,255,0.3)
+}
+
+#flash_message_large {
+  font-size: 8rem;
+}
+
+#sortable {
+  table-layout: fixed;
+}
+
+main {
+  margin-top: 50px;
+  max-width: 100vw;
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+
+.frame_input {
+  width: 75%;
+  height: 40px;
+  margin: 0;
+}
+
+td, th {
+  text-align: center;
+}
+
+td .ui-widget.ui-widget-content.ui-spinner {
+  border: none;
+  width: 100%;
+  text-align: center;
+  overflow: visible;
+}
+
+.ui-spinner-button {
+  display: none;
+
+}
+
+td .ui-spinner-input {
+  border: 1px solid lightgrey;
+  padding: 6px 10px;
+  text-align: center;
+}
+
+#boss_frame {
+  width: 75px;
+  height: 40px;
+  margin: 0;
+  overflow: visible;
+  text-align: center;
+}
+
+.button {
+  font-size: 1.5em;
+  margin: 5px;
+}
+
+.button:hover {
+  opacity: 0.5;
+}
+
+.drag {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+#settings_dropdown a[id$="_menu_item"] {
+  display: flex;
+  -webkit-user-select: none;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+#settings_dropdown .disabled-link {
+  color: darkgray;
+}
+
+#settings_dropdown .disabled-link:hover {
+  background-color: white;
+  cursor: not-allowed;
+}
+
+#settings_dropdown span.glyphicon-ok {
+  color:green;
+}
+
+#settings_dropdown span.glyphicon-remove {
+  color:red;
+}
+
+#small_message_container {
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  opacity: 0.9;
+  justify-content: space-between;
+  padding: 20px 50px;
+  background: #BDC3C7;
+  align-items: center;
+  font-size: 20px;
+}
+
+#small_message_container.success {
+  background: #3FC380;
+}
+
+#small_message_container.error {
+  background: #D64541;
+}
+
+#small_message_container.warning {
+  background: #F5AB35;
+}

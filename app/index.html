@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="us">
+<head>
+	<meta charset="utf-8">
+	<title>OTS TAS Tool</title>
+	<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+	<link rel="stylesheet" href="..\node_modules\bootstrap\dist\css\bootstrap.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div style="display:none;" id="flash_container_large"><h1 style="display:none;" id="flash_message_large"></h1></div>
+	<nav class="navbar navbar-inverse navbar-fixed-top drag">
+		<div class="container-fluid">
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+				<ul class="nav navbar-nav no-drag">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">File<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" onclick="newFile()">New</a></li>
+							<li><a href="#" onclick="save()">Save</a></li>
+							<li><a href="#" onclick="saveAs()">Save as</a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="loadFromFile()">Open</a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="exit()">Exit</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Edit<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" onclick="addAction()">Add action</a></li>
+							<li><a href="#" onclick="addComment()">Add comment</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Install/run<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" onclick="runTAS(true)">Compile TAS and run OTS</a></li>
+							<li><a href="#" onclick="runTAS(false)">Run OTS (no compilation)</a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="install_components()">Install TAS components</a></li>
+							<li><a href="#" onclick="uninstall_components()">Uninstall TAS components</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings<span class="caret"></span></a>
+						<ul id="settings_dropdown" class="dropdown-menu" role="menu">
+							<li><a href="#" id="ots_path_menu_item" onclick="set_ots_path()"></a></li>
+							<li><a href="#" id="ffdec_path_menu_item" onclick="set_ffdec_path()"></a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul style="font-size:1.5em" class="nav navbar-nav navbar-right no-drag">
+					<li><a href="#" id="menu_minimize" onclick="window_minimize()">&#x1f5d5;</a></li>
+					<li><a href="#" id="menu_maximize" onclick="window_maximize()">&#x1f5d6;</a></li>
+					<li><a href="#" if="menu_exit" onclick="exit()">&#x1f5d9;</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main>
+
+		<div style="display:none" id="small_message_container">
+			<span id="small_message">That's not the correct file, please select ffdec.bat for windows, and ffdec.sh for linux/mac.</span>
+			<span style="cursor:pointer;color:darkred;" onclick="$('#small_message_container').slideUp()" class="glyphicon glyphicon-remove"></span>
+		</div>
+
+		<div class="container">
+			<br>
+			<h1 style="text-align:center">Out There Somewhere - TAS tool</h1>
+			<label>Final boss start frame: <input id="boss_frame"></label>
+			<br>
+
+			<br>
+			<table class="table table-bordered" id="sortable">
+				<tr id="header">
+					<th width="50"></th>
+					<th>Frame</th>
+					<th>Horizontal</th>
+					<th>Vertical</th>
+					<th>Teleshot</th>
+					<th>Gauss</th>
+					<th>Jump</th>
+					<th>Custom jump</th>
+					<th></th>
+				</tr>
+			</table>
+		</div>
+	</main>
+	<script>
+	// FOR DEBUGGING!
+	document.addEventListener("keydown", function (e) {
+		if (e.which === 123) {
+			electron.remote.getCurrentWindow().toggleDevTools();
+		} else if (e.which === 116) {
+			location.reload();
+		}
+	});
+</script>
+<script src="settings.js"></script>
+<script src="utils.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<script src="..\node_modules\bootstrap\dist\js\bootstrap.min.js"></script>
+<script src="save_load.js"></script>
+<script src="run_compile.js"></script>
+<script src="edit.js"></script>
+</body>
+</html>

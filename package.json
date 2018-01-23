@@ -1,0 +1,40 @@
+{
+	"name": "OtsTasTool",
+	"productName": "OTS TAS Tool",
+	"version": "1.0.0",
+	"description": "Application for applying a mod to OTS to allow for tool assisted speedruns.",
+	"author": "thisishowmymindworks",
+	"main": "app/main.js",
+	"build": {
+		"appId": "com.ots.tas.tool",
+		"directories": {
+			"output": "release"
+		},
+		"mac": {
+			"category": "tas.tool"
+		}
+	},
+	"files": [
+		"files/*"
+	],
+	"scripts": {
+		"start": "electron .",
+		"pack": "electron-builder --dir",
+		"dist": "electron-builder"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"electron": "~1.6.2",
+		"electron-builder": "^19.54.0"
+	},
+	"dependencies": {
+		"asar": "^0.14.0",
+		"bootstrap": "^3.3.7",
+		"first-run": "^1.2.0",
+		"jquery": "^3.2.1",
+		"jquery-browserify": "^1.8.1",
+		"jquery-mousewheel": "^3.1.13",
+		"jquery-ui": "^1.12.1",
+		"shelljs": "^0.7.8"
+	}
+}
