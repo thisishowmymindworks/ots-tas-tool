@@ -8,7 +8,7 @@ Simply run the installer executable. The latest version can be found [here](rele
 For the rest of the setup process, see the video below. (written guide coming soon)
 
 ## Guides
-- Video guide (coming soon)
+- [Quickstart video guide](https://youtu.be/4N5AKRqA6u0)
 
 ## Acknowledgments
 
