@@ -1,11 +1,11 @@
 package save
 {
-   import game.ui.NewGameScreen;
    import flash.geom.Point;
-   import flashpunk2.global.Debug;
    import flash.utils.ByteArray;
+   import flashpunk2.global.Debug;
    import game.Constants;
    import game.actors.Traitor;
+   import game.ui.NewGameScreen;
    
    public class UserData
    {
@@ -14,10 +14,11 @@ package save
       
       public static var selectedSlot:uint = 0;
       
-      private static var saveFiles:Vector.<save.SaveFile>;
+      private static var saveFiles:Vector.<SaveFile>;
       
-      private static var options:save.OptionsFile;
+      private static var options:OptionsFile;
        
+      
       public function UserData()
       {
          super();
@@ -25,21 +26,21 @@ package save
       
       public static function reloadSaveFiles() : void
       {
-         saveFiles = new Vector.<save.SaveFile>(NewGameScreen.TOTAL_SLOTS,true);
+         saveFiles = new Vector.<SaveFile>(NewGameScreen.TOTAL_SLOTS,true);
          var _loc1_:uint = 0;
          while(_loc1_ < saveFiles.length)
          {
-            saveFiles[_loc1_] = new save.SaveFile(_loc1_);
+            saveFiles[_loc1_] = new SaveFile(_loc1_);
             _loc1_++;
          }
       }
       
       public static function erase(param1:uint) : void
       {
-         saveFiles[param1] = save.SaveFile.eraseThenCreateNew(param1);
+         saveFiles[param1] = SaveFile.eraseThenCreateNew(param1);
       }
       
-      private static function get saveFile() : save.SaveFile
+      private static function get saveFile() : SaveFile
       {
          return saveFiles[selectedSlot];
       }
@@ -453,7 +454,7 @@ package save
       {
          if(options == null)
          {
-            options = new save.OptionsFile();
+            options = new OptionsFile();
          }
       }
    }

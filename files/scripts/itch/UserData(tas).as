@@ -271,7 +271,7 @@ package save
       
       public static function giveCoresToTraitor() : void
       {
-         saveFile._coresGivenToTraitor = uint(saveFile.cores.length);
+         saveFile._coresGivenToTraitor = saveFile.cores.length;
       }
       
       public static function get numberOfShipUpgradesFromTraitor() : uint

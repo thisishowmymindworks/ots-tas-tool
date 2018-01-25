@@ -71,10 +71,13 @@ package controls
          {
             this.down[ButtonCode.SHOOT.code] = Boolean(Number(UserData.getPlaytimeString()) % 2 == 0);
          }
-         else if(Number(UserData.getPlaytimeString()) < this.tas_max_frame)
-         {
-            this.down[ButtonCode.ALTSHOOT.code] = this.tas_gauss[UserData.getPlaytimeString()] == true;
-         }
+
+		if (this.tas_gauss[UserData.getPlaytimeString()] != null) {
+			this.down[ButtonCode.ALTSHOOT.code] = true;
+		} else if (this.tas_gauss[Number(UserData.getPlaytimeString())-1] != null) {
+			this.down[ButtonCode.ALTSHOOT.code] = false;
+		}
+		
          if(param1 == ButtonCode.JUMP.code)
          {
             if(this.tas_jump[UserData.getPlaytimeString()] != null)
