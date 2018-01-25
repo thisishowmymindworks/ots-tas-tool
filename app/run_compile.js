@@ -40,8 +40,16 @@ function compile_tas() {
 		flash_message_small('Cannot compile tas since the OTS path has not been set, please do so in the settings menu','error')
 		return;
 	}
-	var json_tas = compile_to_json();
-	write_to_file(path.join(settings['ots-path'], '..','/tas/otas.json'),JSON.stringify(json_tas));
+
+	try {
+		fs.outputJsonSync(path.join(settings['ots-path'], '..','/tas/otas.json'), compile_to_json())
+		return true;
+	} catch (e) {
+		flash_message_small('Error saving the TAS to file.','error')
+		console.log(e)
+		return false
+	}
+
 }
 
 function runTAS(should_compile) {
@@ -51,7 +59,9 @@ function runTAS(should_compile) {
 	}
 
 	if (should_compile) {
-		compile_tas();
+		if (!compile_tas()) {
+			return false;
+		}
 	}
 
 	try {
@@ -62,8 +72,8 @@ function runTAS(should_compile) {
 }
 
 function install_components() {
-	if (replace_script('save.UserData', path.join(scripts_dir, 'UserData(tas).as'))) {
-		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, 'ControlsProvider(tas).as'))) {
+	if (replace_script('save.UserData', path.join(scripts_dir, settings['ots-version'], 'UserData(tas).as'))) {
+		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['ots-version'], 'ControlsProvider(tas).as'))) {
 			flash_message_small('TAS components successfully installed!','success')
 			return;
 		}
@@ -71,8 +81,8 @@ function install_components() {
 }
 
 function uninstall_components() {
-	if (replace_script('save.UserData', path.join(scripts_dir, 'UserData(vanilla).as'))) {
-		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, 'ControlsProvider(vanilla).as'))){
+	if (replace_script('save.UserData', path.join(scripts_dir, settings['ots-version'], 'UserData(vanilla).as'))) {
+		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['ots-version'], 'ControlsProvider(vanilla).as'))){
 			flash_message_small('TAS components successfully uninstalled!','success')
 			return;
 		}
