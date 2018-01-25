@@ -4,18 +4,17 @@ require('jquery-mousewheel')($);
 const path = require('path')
 const remote = require('electron').remote;
 const dialog = remote.dialog;
-const fs = require('fs');
+const fs = require('fs-extra');
 const shell = require('child_process');
 
 
 // GLOBAL VARS
-const win = remote.getCurrentWindow();
+const win = remote.getCurrentWindow().removeAllListeners();
 const settings_file = path.join(remote.app.getPath('userData'),'\\otas.settings')
-const readonly_scripts_dir = path.join(__dirname, '\\..\\files')
+const readonly_scripts_dir = path.join(__dirname, '\\..\\files\\scripts')
 const scripts_dir = path.join(remote.app.getPath('userData'), '\\scripts')
 var current_save_file = "";
 var settings = load_settings();
-update_settings_menu()
 copy_script_files()
 
 win.on('maximize', function() {
@@ -39,13 +38,7 @@ function window_maximize() {
 }
 
 function copy_script_files() {
-  var script_files = ['UserData(vanilla).as', 'UserData(tas).as','ControlsProvider(vanilla).as','ControlsProvider(tas).as']
-  if (!fs.existsSync(scripts_dir)) {
-    fs.mkdirSync(scripts_dir)
-    for (var i = 0;i<script_files.length;i++) {
-      copy_file(path.join(readonly_scripts_dir,script_files[i]),path.join(scripts_dir,script_files[i]))
-    }
-  }
+  fs.copySync(readonly_scripts_dir, scripts_dir);
 }
 
 function exit() {
@@ -115,15 +108,5 @@ function flash_message_small(msg, css_class) {
   $('#small_message_container').removeClass().slideDown()
   if (css_class !== undefined) {
     $('#small_message_container').addClass(css_class)
-  }
-}
-
-function copy_file(path_from, path_to) {
-  try {
-    var data = read_from_file(path_from)
-    write_to_file(path_to, data)
-  } catch (e) {
-    flash_message_small('Failed to copy file ' + path_from +' to ' + path_to +'. Press f12 to see the full error text')
-    console.log("Error \n" + e)
   }
 }
