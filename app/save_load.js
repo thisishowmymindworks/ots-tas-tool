@@ -1,5 +1,10 @@
 function tasToJSON() {
-	var js_object = {'entries':[],'boss_frame':$('#boss_frame').val()};
+	var js_object = {
+		'entries': [],
+		'boss_frame': $('#boss_frame').val(),
+		'should_skip_dialogue': $('#cb_dialogue_skipping')[0].checked,
+		'dialogue_skip_frame': $('#skip_frame').val()
+	};
 	$(".entry").each(function() {
 		var entry = {};
 		if ($(this).hasClass('comment')) {
@@ -64,6 +69,9 @@ function jsonToTAS(data) {
 		$("#sortable").append(row)
 	}
 	$("#boss_frame").val(js_object['boss_frame'])
+	$('#skip_frame').val(js_object['dialogue_skip_frame'])
+	$('#cb_dialogue_skipping').prop('checked',js_object['should_skip_dialogue'])
+	toggle_dialogue_skipping()
 }
 
 function loadFromFile() {
@@ -84,6 +92,14 @@ function loadFromFile() {
 	});
 }
 
+function clearTAS() {
+	$("#sortable").find(".entry").remove();
+	$('#boss_frame').val("")
+	$('#skip_frame').val(1)
+	$('#cb_dialogue_skipping').prop('checked',false)
+	toggle_dialogue_skipping()
+}
+
 function newFile() {
 	// NEEDS REWRITING (NEW, BUT NOT SAVED FILES WILL BE WIPED)
 	// SHOULD PROBABLY ADD THE OPTION TO SAVE BEFORE CREATING NEW FILE
@@ -92,13 +108,11 @@ function newFile() {
 	if (current_save_file) {
 		if (confirm("Are you sure you want to create a new file? \n(All unsaved changes will be lost)")) {
 			current_save_file = ""
-			$("#sortable").find(".entry").remove();
-			$('#boss_frame').val("")
+			clearTAS()
 		} else {
 			return;
 		}
 	} else {
-		$("#sortable").find(".entry").remove();
-		$('#boss_frame').val("")
+		clearTAS()
 	}
 }

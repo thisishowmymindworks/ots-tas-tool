@@ -1,9 +1,15 @@
 function compile_to_json() {
-	var tas = {"up_down":{},"left_right":{},"jump":{},"teleshot":{},"gauss":{},"boss_frame":9999999999,"max_frame":1}
+	var tas = {
+		"up_down": {},
+		"left_right": {},
+		"jump": {},
+		"teleshot": {},
+		"gauss": {},
+		"boss_frame": 9999999999,
+		"skip_frame": 9999999999,
+		"max_frame": 1}
 
-	if ($("#boss_frame").val() && +$("#boss_frame").val()>0) {
-		tas["boss_frame"] = +$("#boss_frame").val()
-	}
+
 	$(".action").each(function() {
 		var frame = $(this).find(".frame_input").val();
 		if (tas["max_frame"]<+frame) {
@@ -29,9 +35,18 @@ function compile_to_json() {
 			tas["jump"][frame] = JSON.parse($(this).find(".custom_jump").val());
 		}
 	})
-	if (tas["max_frame"] < (+tas["boss_frame"]+200)) {
-		tas["max_frame"] = (+tas["boss_frame"]+200)
+	if ($("#boss_frame").val() && +$("#boss_frame").val()>0) {
+		tas["boss_frame"] = +$("#boss_frame").val()
+
+		if (tas["max_frame"] < (+tas["boss_frame"]+200)) {
+			tas["max_frame"] = (+tas["boss_frame"]+200)
+		}
 	}
+
+	if ($('#cb_dialogue_skipping')[0].checked && ($("#skip_frame").val())) {
+		tas["skip_frame"] = +$("#skip_frame").val()
+	}
+
 	return tas;
 }
 
