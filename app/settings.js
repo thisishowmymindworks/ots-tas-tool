@@ -7,7 +7,14 @@ function load_settings() {
     }
     return settings_object;
   }
-  return {'ots-path':'','ffdec-path':'','templatesave-path':'','ots-version':'steam'}
+  return {
+    'ots-path':'',
+    'ffdec-path':'',
+    'savefiles-path':'',
+    'ots-version':'steam',
+    'clear-saves': false,
+    'insert-template': false
+  }
 }
 
 function save_settings() {
@@ -15,6 +22,9 @@ function save_settings() {
   settings['ots-path'] = $('#settings_ots_path').val();
   settings['ffdec-path'] = $('#settings_ffdec_path').val();
   settings['ots-version'] = $('input[name=ots_version]:checked').val();
+  settings['savefiles-path'] = $('#settings_savefile_path').val();
+  settings['clear-saves'] = $('#cb_clear_saves')[0].checked;
+  settings['insert-template'] = $('#cb_template_saves')[0].checked;
 
   try {
     fs.outputJsonSync(settings_file, settings)
@@ -37,7 +47,13 @@ function open_settings_menu() {
     $('#settings_ffdec_path').val(settings['ffdec-path'])
   }
 
+  if (fs.pathExistsSync(settings['savefiles-path'])) {
+    $('#settings_savefile_path').val(settings['savefiles-path'])
+  }
+
   $('input[name=ots_version][value=' + settings['ots-version'] + ']').prop('checked', true);
+  $('#cb_clear_saves').prop('checked', !!settings['clear-saves']);
+  $('#cb_template_saves').prop('checked', !!settings['insert-template']);
 
   $('#settings_modal').modal('show');
 }
@@ -56,5 +72,12 @@ function set_ffdec_path() {
   var ffdec_path = get_path_from_dialog({title:'Select either ffdec.bat for windows, or ffdec.sh for mac',filters: [{ name: 'FFDEC', extensions: ['bat','sh'] },{ name: 'All files', extensions: ['*'] }]})
   if (ffdec_path && (path.parse(ffdec_path).ext == '.sh' || path.parse(ffdec_path).ext == '.bat')) {
     $('#settings_ffdec_path').val(ffdec_path)
+  }
+}
+
+function set_savefile_path() {
+  var savefiles_path = get_path_from_dialog({defaultpath:remote.app.getPath('appData'),title:'Select the folder that contains OTS\' savefiles',properties: ['openDirectory']})
+  if (savefiles_path) {
+    $('#settings_savefile_path').val(savefiles_path)
   }
 }
