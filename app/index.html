@@ -98,8 +98,20 @@
 		<div class="container">
 			<br>
 			<h1 style="text-align:center">Out There Somewhere - TAS tool</h1>
-			<label>Final boss start frame: <input id="boss_frame"></label>
 			<br>
+			<div class="well" style="display:flex;justify-content:space-around;align-items:center;">
+				<div class="input-group col-sm-3">
+				<span class="input-group-addon"><label style="margin:0">Final boss start frame:</label></span>
+				<input id="boss_frame">
+				</div>
+				<div class="input-group col-sm-3">
+					 <span class="input-group-addon skipping">
+						 <label id="lbl_dialogue_skipping">Dialogue skipping:<input type="checkbox" onchange="toggle_dialogue_skipping()" id="cb_dialogue_skipping"></label>
+					 </span>
+					<input class="form-control" id="skip_frame" value="1">
+    		</div>
+				<div class="col-sm-3"></div>
+			</div>
 
 			<br>
 			<table class="table table-bordered" id="sortable">
