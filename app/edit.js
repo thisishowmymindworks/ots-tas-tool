@@ -2,9 +2,9 @@ $(function() {
 
 	$("#sortable").sortable({items:"tr.entry",handle:".drag_handle"});
 	$("#sortable").disableSelection();
-	$(".frame_input, #boss_frame").spinner({min: 1});
+	$(".frame_input, #boss_frame, #skip_frame").spinner({min: 1});
 	try {
-		$("input[type=checkbox]").checkboxradio();
+		$(".entry input[type=checkbox]").checkboxradio();
 	} catch(e) {}
 
 	if (win.isMaximized()) {
@@ -53,4 +53,13 @@ function addComment() {
 function remove(btn) {
 	var row = $(btn).parent().parent();
 	row.remove();
+}
+
+function toggle_dialogue_skipping() {
+	var checked = $("#cb_dialogue_skipping")[0].checked;
+	if (checked) {
+		$('span.skipping + span.ui-spinner').animate({width:'100px'})
+	} else {
+		$('span.skipping + span.ui-spinner').animate({width:'0'})
+	}
 }

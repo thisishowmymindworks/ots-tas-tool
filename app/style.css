@@ -93,6 +93,31 @@ td .ui-spinner-input {
   text-align: center;
 }
 
+#skip_frame {
+  height: 40px;
+  margin: 0;
+  border-radius: 0;
+  border: 0px;
+  overflow: visible;
+  text-align: center;
+}
+
+#lbl_dialogue_skipping {
+  margin: 0px;
+  display: flex;
+  align-items: center;
+}
+
+#cb_dialogue_skipping {
+  zoom: 2;
+  margin-left: 5px;
+}
+
+span.skipping + span.ui-spinner {
+  border-radius: 0 4px 4px 0;
+  width: 0px;
+}
+
 .button {
   font-size: 1.5em;
   margin: 5px;
@@ -111,6 +136,6 @@ td .ui-spinner-input {
 }
 
 .settings_container {
-  padding-left: 100px;
-  padding-right: 100px;
+  padding-left: 80px;
+  padding-right: 80px;
 }

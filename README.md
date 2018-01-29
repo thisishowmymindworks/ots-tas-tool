@@ -3,9 +3,9 @@ An Electron application that enables the creation and running of TASes (tool ass
 ## Prerequisites
 For the program to be able to mod OTS you need to download JPEXS Free Flash Decompiler. Download links can be found [here](https://github.com/jindrapetrik/jpexs-decompiler/releases), you should pick the one tagged with "latest release".
 ## Installing
-Simply run the installer executable. The latest version can be found [here](release/OTS%20TAS%20Tool%20Setup%201.0.1.exe).
+Simply run the installer executable. The latest version can be found [here](https://github.com/thisishowmymindworks/ots-tas-tool/releases).
 
-For the rest of the setup process, see the video below. (written guide coming soon)
+For the rest of the setup process either have a look at the [wiki](https://github.com/thisishowmymindworks/ots-tas-tool/wiki), or the video guide below (currently slightly outdated).
 
 ## Guides
 - [Quickstart video guide](https://youtu.be/4N5AKRqA6u0)

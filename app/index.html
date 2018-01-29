@@ -77,6 +77,18 @@
 						<input id="settings_ffdec_path" class="col-sm-9" type="text" disabled>
 						<button type="button" class="btn btn-default col-sm-2 col-sm-offset-1" onclick="set_ffdec_path()">Set ffdec path</button>
 					</div>
+					<br>
+					<div class="row">
+						<input id="settings_savefile_path" class="col-sm-9" type="text" disabled>
+						<button type="button" class="btn btn-default col-sm-2 col-sm-offset-1" onclick="set_savefile_path()">Set savefile path</button>
+					</div>
+					<div class="row">
+						<div class=col-sm-9>
+							<label class="h4">Clear all saves <input id="cb_clear_saves" type="checkbox"></label>
+							<span style="margin:20px;"></span>
+							<label class="h4">Insert template save <input id="cb_template_saves" type="checkbox"></label>
+						</div>
+					</div>
 					<br><br><br>
 				</div>
 				<div class="modal-footer">
@@ -98,8 +110,20 @@
 		<div class="container">
 			<br>
 			<h1 style="text-align:center">Out There Somewhere - TAS tool</h1>
-			<label>Final boss start frame: <input id="boss_frame"></label>
 			<br>
+			<div class="well" style="display:flex;justify-content:space-around;align-items:center;">
+				<div class="input-group col-sm-3">
+				<span class="input-group-addon"><label style="margin:0">Final boss start frame:</label></span>
+				<input id="boss_frame">
+				</div>
+				<div class="input-group col-sm-3">
+					 <span class="input-group-addon skipping">
+						 <label id="lbl_dialogue_skipping">Dialogue skipping:<input type="checkbox" onchange="toggle_dialogue_skipping()" id="cb_dialogue_skipping"></label>
+					 </span>
+					<input class="form-control" id="skip_frame" value="1">
+    		</div>
+				<div class="col-sm-3"></div>
+			</div>
 
 			<br>
 			<table class="table table-bordered" id="sortable">

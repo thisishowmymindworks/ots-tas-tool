@@ -1,6 +1,5 @@
 # dist
 release/*
-!release/*.exe
 # Logs
 logs
 *.log
