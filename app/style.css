@@ -45,7 +45,6 @@ body{
   background: #F5AB35;
 }
 
-
 #sortable {
   table-layout: fixed;
 }
@@ -83,6 +82,16 @@ td .ui-spinner-input {
   border: 1px solid lightgrey;
   padding: 6px 10px;
   text-align: center;
+}
+
+.entry option {
+  background: white;
+  color: black;
+}
+
+.dropdownActionSelected {
+  background: #007fff;
+  color: white;
 }
 
 #boss_frame {

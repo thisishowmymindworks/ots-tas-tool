@@ -67,6 +67,7 @@ function jsonToTAS(data) {
 			$(row).find(".custom_jump").val(entry.custom_jump);
 		}
 		$("#sortable").append(row)
+		$(row).find('select').change()
 	}
 	$("#boss_frame").val(js_object['boss_frame'])
 	$('#skip_frame').val(js_object['dialogue_skip_frame'])

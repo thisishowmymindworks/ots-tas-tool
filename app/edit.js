@@ -25,6 +25,9 @@ function createActionRow(frameNumber) {
 	row.append("<td style='vertical-align:middle;'><i onclick='duplicate(this)' class='glyphicon glyphicon-duplicate button'></i><i onclick='remove(this)' style='color:darkred;' class='glyphicon glyphicon-remove button'></i></td>")
 	row.find(".frame_input").spinner({min: 1});
 	row.find("input[type=checkbox]").checkboxradio();
+	row.find("select").change(function() {
+		$(this).toggleClass('dropdownActionSelected', $(this).val() != 'none')
+	})
 	return row;
 }
 
