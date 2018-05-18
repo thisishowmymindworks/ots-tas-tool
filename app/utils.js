@@ -6,6 +6,7 @@ const remote = require('electron').remote;
 const dialog = remote.dialog;
 const fs = require('fs-extra');
 const shell = require('child_process');
+const iconv = require('iconv-lite');
 
 
 // GLOBAL VARS
@@ -80,7 +81,7 @@ function read_from_file(path) {
 
 function write_to_file(path, data) {
   try {
-    fs.writeFileSync(path, data)
+    fs.writeFileSync(path, iconv.encode(data,'win1252'))
     return true;
   } catch (e) {
     // HANDLE ERROR!

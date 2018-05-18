@@ -15,6 +15,15 @@ $(function() {
 });
 
 
+function add_frames_between(start, end, delta) {
+	$('#sortable .action .frame_input').each(function() {
+		var value = +this.value
+		if (value > start && value < end) {
+			this.value = value+delta
+		}
+	})
+}
+
 function createActionRow(frameNumber) {
 	var row = $("<tr class='entry action'><td class='drag_handle' style='vertical-align:middle;'>☰</td></tr>")
 	row.append("<td><input class='frame_input' value='" + frameNumber + "''></td>")
