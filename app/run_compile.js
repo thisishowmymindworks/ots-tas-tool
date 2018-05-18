@@ -79,19 +79,19 @@ function runTAS(should_compile) {
 		}
 	}
 
-	if (settings['clear-saves']) {
-		for (var i = 0;i<3;i++) {
-			var slot_path = path.join(settings['savefiles-path'], 'save'+i+'.dat');
-			if (fs.existsSync(slot_path)) {
-				fs.removeSync(slot_path);
+	if (ddl_template_save.selectedIndex != 0) {
+			for (var i = 0;i<3;i++) {
+				var slot_path = path.join(settings['savefiles-path'], 'save'+i+'.dat');
+				if (fs.existsSync(slot_path)) {
+					fs.removeSync(slot_path);
+				}
 			}
-		}
-	}
 
-	if (settings['insert-template']) {
-		if (fs.existsSync(path.join(settings['savefiles-path'], 'save3.dat'))) {
-			fs.copySync(path.join(settings['savefiles-path'], 'save3.dat'), path.join(settings['savefiles-path'], 'save0.dat'))
-		}
+			let savefile = $(ddl_template_save.selectedOptions[0]).data('savefile');
+
+			if (settings['insert-template'] && savefile) {
+				write_to_file(path.join(settings['savefiles-path'], 'save0.dat'), iconv.decode(savefile,'win1252'))
+			}
 	}
 
 	try {

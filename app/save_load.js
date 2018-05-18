@@ -3,7 +3,8 @@ function tasToJSON() {
 		'entries': [],
 		'boss_frame': $('#boss_frame').val(),
 		'should_skip_dialogue': $('#cb_dialogue_skipping')[0].checked,
-		'dialogue_skip_frame': $('#skip_frame').val()
+		'dialogue_skip_frame': $('#skip_frame').val(),
+		'template-saves' : template_saves_to_list()
 	};
 	$(".entry").each(function() {
 		var entry = {};
@@ -73,6 +74,7 @@ function jsonToTAS(data) {
 	$('#skip_frame').val(js_object['dialogue_skip_frame'])
 	$('#cb_dialogue_skipping').prop('checked',js_object['should_skip_dialogue'])
 	toggle_dialogue_skipping()
+	load_template_saves(js_object['template-saves'])
 }
 
 function loadFromFile() {

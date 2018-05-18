@@ -122,6 +122,10 @@ td .ui-spinner-input {
   margin-left: 5px;
 }
 
+#ddl_template_save {
+  height: 50px;
+}
+
 span.skipping + span.ui-spinner {
   border-radius: 0 4px 4px 0;
   width: 0px;
@@ -133,6 +137,8 @@ span.skipping + span.ui-spinner {
 }
 
 .button:hover {
+  cursor: pointer;
+  text-decoration: none;
   opacity: 0.5;
 }
 
