@@ -51,13 +51,13 @@ function compile_to_json() {
 }
 
 function compile_tas() {
-	if (!fs.existsSync(settings['ots-path'])) {
+	if (!fs.existsSync(settings[settings['useWhichOts']]['otsPath'])) {
 		flash_message_small('Cannot compile tas since the OTS path has not been set, please do so in the settings menu','error')
 		return;
 	}
 
 	try {
-		fs.outputJsonSync(path.join(settings['ots-path'], '..','/tas/otas.json'), compile_to_json())
+		fs.outputJsonSync(path.join(settings[settings['useWhichOts']]['otsPath'], '..','/tas/otas.json'), compile_to_json())
 		return true;
 	} catch (e) {
 		flash_message_small('Error saving the TAS to file.','error')
@@ -68,7 +68,7 @@ function compile_tas() {
 }
 
 function runTAS(should_compile) {
-	if (!fs.existsSync(settings['ots-path'])) {
+	if (!fs.existsSync(settings[settings['useWhichOts']]['otsPath'])) {
 		flash_message_small('Cannot run OTS since the path has not been set, please do so in the settings menu','error')
 		return
 	}
@@ -81,7 +81,7 @@ function runTAS(should_compile) {
 
 	if (ddl_template_save.selectedIndex != 0) {
 			for (var i = 0;i<3;i++) {
-				var slot_path = path.join(settings['savefiles-path'], 'save'+i+'.dat');
+				var slot_path = path.join(settings[settings['useWhichOts']]['savefilesPath'], 'save'+i+'.dat');
 				if (fs.existsSync(slot_path)) {
 					fs.removeSync(slot_path);
 				}
@@ -89,21 +89,21 @@ function runTAS(should_compile) {
 
 			let savefile = $(ddl_template_save.selectedOptions[0]).data('savefile');
 
-			if (settings['insert-template'] && savefile) {
-				write_to_file(path.join(settings['savefiles-path'], 'save0.dat'), iconv.decode(savefile,'win1252'))
+			if (settings[settings['useWhichOts']]['savefilesPath'] && savefile) {
+				write_to_file(path.join(settings[settings['useWhichOts']]['savefilesPath'], 'save0.dat'), iconv.decode(savefile,'win1252'))
 			}
 	}
 
 	try {
-		shell.execSync('taskkill /IM \"' + settings['ots-path'] + '\"');
+		shell.execSync('taskkill /IM \"' + settings[settings['useWhichOts']]['otsPath'] + '\"');
 	}
 	catch (e) {}
-	shell.exec('\"' + settings['ots-path'] + '\"')
+	shell.exec('\"' + settings[settings['useWhichOts']]['otsPath'] + '\"')
 }
 
 function install_components() {
-	if (replace_script('save.UserData', path.join(scripts_dir, settings['ots-version'], 'UserData(tas).as'))) {
-		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['ots-version'], 'ControlsProvider(tas).as'))) {
+	if (replace_script('save.UserData', path.join(scripts_dir, settings['useWhichOts'], 'UserData(tas).as'))) {
+		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['useWhichOts'], 'ControlsProvider(tas).as'))) {
 			flash_message_small('TAS components successfully installed!','success')
 			return;
 		}
@@ -111,8 +111,8 @@ function install_components() {
 }
 
 function uninstall_components() {
-	if (replace_script('save.UserData', path.join(scripts_dir, settings['ots-version'], 'UserData(vanilla).as'))) {
-		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['ots-version'], 'ControlsProvider(vanilla).as'))){
+	if (replace_script('save.UserData', path.join(scripts_dir, settings['useWhichOts'], 'UserData(vanilla).as'))) {
+		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['useWhichOts'], 'ControlsProvider(vanilla).as'))){
 			flash_message_small('TAS components successfully uninstalled!','success')
 			return;
 		}

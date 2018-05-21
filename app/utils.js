@@ -49,13 +49,13 @@ function exit() {
 }
 
 function replace_script(class_name, script_file) {
-  if (!fs.existsSync(path.join(settings['ots-path'],'..','ots.swf')) || !fs.existsSync(settings['ffdec-path'])) {
+  if (!fs.existsSync(path.join(settings[settings['useWhichOts']]['otsPath'],'..','ots.swf')) || !fs.existsSync(settings['ffdecPath'])) {
     flash_message_small('OTS and/or ffdec path has not been set, please do so in the settings menu','warning')
     return false;
   }
-  var ots_swf_path = path.join(settings['ots-path'],'..','ots.swf')
+  var ots_swf_path = path.join(settings[settings['useWhichOts']]['otsPath'],'..','ots.swf')
   try {
-    var cmd = '\"' + [settings['ffdec-path'], '-replace', ots_swf_path, ots_swf_path,  class_name, script_file].join('\" \"') + '\"'
+    var cmd = '\"' + [settings['ffdecPath'], '-replace', ots_swf_path, ots_swf_path,  class_name, script_file].join('\" \"') + '\"'
     shell.execSync(cmd)
     return true;
   } catch (e) {
