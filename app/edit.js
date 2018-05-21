@@ -12,6 +12,8 @@ $(function() {
 	} else {
 		$('#menu_maximize').html('&#x1f5d6;')
 	}
+
+	document.querySelector('.settings_container').addEventListener('click', settings_set_path)
 });
 
 

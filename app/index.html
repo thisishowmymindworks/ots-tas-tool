@@ -62,34 +62,39 @@
 					<h1 class="modal-title">Settings</h1>
 				</div>
 				<div class="modal-body settings_container">
-					<br>
-					<div class="row">
-						<input id="settings_ots_path" class="col-sm-9" type="text" disabled>
-						<button type="button" class="btn btn-default col-sm-2 col-sm-offset-1" onclick="set_ots_path()">Set OTS path</button>
-					</div>
-					<div class="row">
-						<span class="h4">&nbsp;OTS version: </span>
-						<div class="radio-inline"><label><input type="radio" checked value="steam" name="ots_version"> Steam</label></div>
-						<div class="radio-inline"><label><input type="radio" value="itch" name="ots_version"> Itch.io (1.1 or 1.11)</label></div>
-					</div>
-					<br>
-					<div class="row">
-						<input id="settings_ffdec_path" class="col-sm-9" type="text" disabled>
-						<button type="button" class="btn btn-default col-sm-2 col-sm-offset-1" onclick="set_ffdec_path()">Set ffdec path</button>
-					</div>
-					<br>
-					<div class="row">
-						<input id="settings_savefile_path" class="col-sm-9" type="text" disabled>
-						<button type="button" class="btn btn-default col-sm-2 col-sm-offset-1" onclick="set_savefile_path()">Set savefile path</button>
-					</div>
-					<div class="row">
-						<div class="col-sm-9">
-							<label class="h4">Clear all saves <input id="cb_clear_saves" type="checkbox"></label>
-							<span style="margin:20px;"></span>
-							<label class="h4">Insert template save <input id="cb_template_saves" type="checkbox"></label>
+					<div class="settings_tab_container">
+						<span>OTS version:</span>
+						<select class="select" id="use_which_ots" onchange="$('.settings_tab').hide();$('#settings_tab_'+event.target.value).show()">
+							<option value="steam">Steam</option>
+							<option value="itch">Itch.io</option>
+						</select>
+						<div class="settings_tab" id="settings_tab_steam">
+							<div class="settings_row">
+								<input class="ots_path" type="text" disabled>
+								<button type="button" data-action="set-path" class="btn btn-default set-path">Set OTS path</button>
+							</div>
+							<div class="settings_row">
+								<input class="savefile_path" type="text" disabled>
+								<button type="button" data-action="set-path" class="btn btn-default set-path">Set savefile path</button>
+							</div>
+						</div>
+						<div class="settings_tab" id="settings_tab_itch">
+							<div class="settings_row">
+								<input class="ots_path" type="text" disabled>
+								<button type="button" data-action="set-path" class="btn btn-default set-path">Set OTS path</button>
+							</div>
+							<div class="settings_row">
+								<input class="savefile_path" type="text" disabled>
+								<button type="button" data-action="set-path" class="btn btn-default set-path">Set savefile path</button>
+							</div>
 						</div>
 					</div>
-					<br><br><br>
+					<div class="settings_tab_container">
+						<div class="settings_row">
+							<input class="ffdec_path" type="text" disabled>
+							<button type="button" data-action="set-path" class="btn btn-default">Set ffdec path</button>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -107,7 +112,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h1 class="modal-title">Template saveslots</h1>
 				</div>
-				<div class="modal-body settings_container">
+				<div class="modal-body">
 					<table class="table" id="template_savefiles_table">
 						<tr>
 							<th>Name</th>
