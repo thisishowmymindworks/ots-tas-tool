@@ -13,6 +13,7 @@ body{
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  background-color: white;
   background-color: rgba(255,255,255,0.3)
 }
 
@@ -44,7 +45,6 @@ body{
 #small_message_container.warning {
   background: #F5AB35;
 }
-
 
 #sortable {
   table-layout: fixed;
@@ -85,6 +85,16 @@ td .ui-spinner-input {
   text-align: center;
 }
 
+.entry option {
+  background: white;
+  color: black;
+}
+
+.dropdownActionSelected {
+  background: #007fff;
+  color: white;
+}
+
 #boss_frame {
   width: 75px;
   height: 40px;
@@ -97,25 +107,29 @@ td .ui-spinner-input {
   height: 40px;
   margin: 0;
   border-radius: 0;
-  border: 0px;
+  border: 0;
   overflow: visible;
   text-align: center;
 }
 
 #lbl_dialogue_skipping {
-  margin: 0px;
-  display: flex;
   align-items: center;
+  display: flex;
+  margin: 0px;
 }
 
 #cb_dialogue_skipping {
-  zoom: 2;
   margin-left: 5px;
+  zoom: 2;
 }
 
-span.skipping + span.ui-spinner {
+#ddl_template_save {
+  height: 50px;
+}
+
+.skipping + span.ui-spinner {
   border-radius: 0 4px 4px 0;
-  width: 0px;
+  width: 0;
 }
 
 .button {
@@ -123,7 +137,15 @@ span.skipping + span.ui-spinner {
   margin: 5px;
 }
 
+.select {
+  border-radius: 4px;
+  margin: 9px 0;
+  padding: 10px 17px;
+}
+
 .button:hover {
+  cursor: pointer;
+  text-decoration: none;
   opacity: 0.5;
 }
 
@@ -136,6 +158,36 @@ span.skipping + span.ui-spinner {
 }
 
 .settings_container {
-  padding-left: 80px;
-  padding-right: 80px;
+  padding: 15px 50px;
+}
+
+.settings_tab_container {
+  border: 1px solid gray;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  padding: 20px 10px;
+}
+
+.settings_tab {
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+  justify-content: space-around;
+}
+
+.settings_row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.settings_row :first-child {
+  flex-basis: 100px;
+  flex-grow: 7;
+  margin-right: 20px;
+}
+
+.settings_row :last-child {
+  flex-basis: 100px;
+  flex-grow: 1;
+  margin-left: 10px;
 }
