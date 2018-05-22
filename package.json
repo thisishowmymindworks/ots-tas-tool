@@ -32,6 +32,7 @@
 		"bootstrap": "^3.3.7",
 		"first-run": "^1.2.0",
 		"fs-extra": "^5.0.0",
+		"iconv-lite": "^0.4.23",
 		"jquery": "^3.3.1",
 		"jquery-browserify": "^1.8.1",
 		"jquery-mousewheel": "^3.1.13",
