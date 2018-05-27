@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"asar": "^0.14.3",
-		"bootstrap": "^3.3.7",
+		"dragula": "^3.7.2",
 		"first-run": "^1.2.0",
 		"fs-extra": "^5.0.0",
 		"iconv-lite": "^0.4.23",
@@ -37,6 +37,7 @@
 		"jquery-browserify": "^1.8.1",
 		"jquery-mousewheel": "^3.1.13",
 		"jquery-ui": "^1.12.1",
-		"shelljs": "^0.7.8"
+		"shelljs": "^0.7.8",
+		"uikit": "^3.0.0-rc.2"
 	}
 }

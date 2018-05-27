@@ -4,183 +4,237 @@
 	<meta charset="utf-8">
 	<title>OTS TAS Tool</title>
 	<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
-	<link rel="stylesheet" href="..\node_modules\bootstrap\dist\css\bootstrap.min.css">
+
+	<link rel="stylesheet" href="..\node_modules\uikit\dist\css\uikit.min.css">
+	<link rel="stylesheet" href="..\node_modules\dragula\dist\dragula.min.css">
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
+	<!-- MESSAGES -->
 	<div style="display:none;" id="flash_container_large"><h1 style="display:none;" id="flash_message_large"></h1></div>
-	<nav class="navbar navbar-inverse navbar-fixed-top drag">
-		<div class="container-fluid">
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
-				<ul class="nav navbar-nav no-drag">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">File<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#" onclick="newFile()">New</a></li>
-							<li><a href="#" onclick="save()">Save</a></li>
-							<li><a href="#" onclick="saveAs()">Save as</a></li>
-							<li class="divider"></li>
+
+	<!-- NAVBAR -->
+	<nav class="uk-navbar-container uk-dark drag" uk-navbar="mode: click;">
+		<div class="uk-navbar-left no-drag">
+			<ul class="uk-navbar-nav">
+
+				<li class="uk-margin-left">
+					<a href="#">File</a>
+					<div class="uk-navbar-dropdown uk-margin-remove-top">
+						<ul class="uk-nav uk-navbar-dropdown-nav">
+              <li><a href="#" onclick="newFile()">New</a></li>
+              <li><a href="#" onclick="save()">Save</a></li>
+              <li><a href="#" onclick="saveAs()">Save as</a></li>
+							<li class="uk-nav-divider"></li>
 							<li><a href="#" onclick="loadFromFile()">Open</a></li>
-							<li class="divider"></li>
+							<li class="uk-nav-divider"></li>
 							<li><a href="#" onclick="exit()">Exit</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Edit<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
+            </ul>
+					</div>
+				</li>
+
+
+				<li>
+					<a href="#">Edit</a>
+					<div class="uk-navbar-dropdown uk-margin-remove-top">
+						<ul class="uk-nav uk-navbar-dropdown-nav">
 							<li><a href="#" onclick="addAction()">Add action</a></li>
 							<li><a href="#" onclick="addComment()">Add comment</a></li>
 						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Install/run<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
+					</div>
+				</li>
+
+				<li>
+					<a href="#">Instal/run</a>
+					<div class="uk-navbar-dropdown uk-margin-remove-top">
+						<ul class="uk-nav uk-navbar-dropdown-nav">
 							<li><a href="#" onclick="runTAS(true)">Compile TAS and run OTS</a></li>
 							<li><a href="#" onclick="runTAS(false)">Run OTS (no compilation)</a></li>
-							<li class="divider"></li>
+							<li class="uk-nav-divider"></li>
 							<li><a href="#" onclick="install_components()">Install TAS components</a></li>
 							<li><a href="#" onclick="uninstall_components()">Uninstall TAS components</a></li>
 						</ul>
-					</li>
-					<li><a onclick="open_settings_menu()">Settings</a></li>
-				</ul>
-				<ul style="font-size:1.5em" class="nav navbar-nav navbar-right no-drag">
-					<li><a href="#" id="menu_minimize" onclick="window_minimize()">&#x1f5d5;</a></li>
-					<li><a href="#" id="menu_maximize" onclick="window_maximize()">&#x1f5d6;</a></li>
-					<li><a href="#" if="menu_exit" onclick="exit()">&#x1f5d9;</a></li>
-				</ul>
-			</div>
+					</div>
+				</li>
+
+				<li>
+					<a href="#" onclick="open_settings_menu()">Settings</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="uk-navbar-right no-drag">
+			<ul style="font-size:3em" class="uk-navbar-nav">
+				<li><a href="#" id="menu_minimize" onclick="window_minimize()">&#x1f5d5;</a></li>
+				<li><a href="#" id="menu_maximize" onclick="window_maximize()">&#x1f5d6;</a></li>
+				<li><a href="#" if="menu_exit" onclick="exit()">&#x1f5d9;</a></li>
+			</ul>
 		</div>
 	</nav>
 
 	<!-- SETTINGS MODAL -->
-	<div class="modal fade" id="settings_modal" tabindex="-1">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h1 class="modal-title">Settings</h1>
+	<div id="settings_modal" class="no-drag uk-modal-container" uk-modal>
+		<div class="uk-modal-dialog">
+			<!-- TOP RIGHT CLOSE BUTTON -->
+			<button class="uk-modal-close-default" type="button" uk-close></button>
+			<!-- MODAL HEADER -->
+			<div class="uk-modal-header">
+				<h1 class="uk-modal-title">Settings</h1>
+			</div>
+			<!-- MODAL BODY -->
+			<div class="uk-modal-body settings_container">
+				<div class="form-border-header">
+					<span>OTS version:</span>
+					<select class="uk-select uk-form-width-medium" id="use_which_ots" onchange="$('.settings_tab').hide();$('#settings_tab_'+event.target.value).show()">
+						<option value="steam">Steam</option>
+						<option value="itch">Itch.io</option>
+					</select>
 				</div>
-				<div class="modal-body settings_container">
-					<div class="settings_tab_container">
-						<span>OTS version:</span>
-						<select class="select" id="use_which_ots" onchange="$('.settings_tab').hide();$('#settings_tab_'+event.target.value).show()">
-							<option value="steam">Steam</option>
-							<option value="itch">Itch.io</option>
-						</select>
-						<div class="settings_tab" id="settings_tab_steam">
-							<div class="settings_row">
-								<input class="ots_path" type="text" disabled>
-								<button type="button" data-action="set-path" class="btn btn-default set-path">Set OTS path</button>
-							</div>
-							<div class="settings_row">
-								<input class="savefile_path" type="text" disabled>
-								<button type="button" data-action="set-path" class="btn btn-default set-path">Set savefile path</button>
-							</div>
-						</div>
-						<div class="settings_tab" id="settings_tab_itch">
-							<div class="settings_row">
-								<input class="ots_path" type="text" disabled>
-								<button type="button" data-action="set-path" class="btn btn-default set-path">Set OTS path</button>
-							</div>
-							<div class="settings_row">
-								<input class="savefile_path" type="text" disabled>
-								<button type="button" data-action="set-path" class="btn btn-default set-path">Set savefile path</button>
-							</div>
-						</div>
-					</div>
-					<div class="settings_tab_container">
+
+				<div class="settings_tab_container uk-margin-bottom">
+					<div class="settings_tab uk-margin-top" id="settings_tab_steam">
 						<div class="settings_row">
-							<input class="ffdec_path" type="text" disabled>
-							<button type="button" data-action="set-path" class="btn btn-default">Set ffdec path</button>
+							<input data-path-type="ots_path" class="uk-input" type="text" disabled>
+							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set OTS path</button>
+						</div>
+						<div class="settings_row">
+							<input data-path-type="savefile_path" class="uk-input" type="text" disabled>
+							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set savefile path</button>
+						</div>
+					</div>
+
+					<div class="settings_tab uk-margin-top" id="settings_tab_itch">
+						<div class="settings_row">
+							<input data-path-type="ots_path" class="uk-input" type="text" disabled>
+							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set OTS path</button>
+						</div>
+						<div class="settings_row">
+							<input data-path-type="savefile_path" class="uk-input" type="text" disabled>
+							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set savefile path</button>
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" onclick="save_settings()">Save changes</button>
+
+				<div class="settings_tab_container uk-margin-bottom">
+					<div class="settings_row">
+						<input class="uk-input" data-path-type="ffdec_path" type="text" disabled>
+						<button type="button" data-action="set-path" class="uk-button uk-button-default">Set ffdec path</button>
+					</div>
 				</div>
+			</div>
+			<!-- MODAL FOOTER -->
+			<div class="uk-modal-footer uk-text-right">
+				<button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        <button class="uk-button uk-button-primary" onclick="save_settings()" type="button">Save changes</button>
 			</div>
 		</div>
 	</div>
 
 	<!-- TEMPLATE SAVES MODAL -->
-	<div class="modal fade" id="template_save_modal" tabindex="-1">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h1 class="modal-title">Template saveslots</h1>
-				</div>
-				<div class="modal-body">
-					<table class="table" id="template_savefiles_table">
-						<tr>
-							<th>Name</th>
-							<th width="100px">File</th>
-							<th>Delete</th>
+	<div id="template_save_modal" class="no-drag uk-modal-container" uk-modal>
+		<div class="uk-modal-dialog">
+			<!-- TOP RIGHT CLOSE BUTTON -->
+			<button class="uk-modal-close-default" type="button" uk-close></button>
+			<!-- MODAL HEADER -->
+			<div class="uk-modal-header">
+				<h1 class="uk-modal-title">Template save files</h1>
+			</div>
+			<!-- MODAL BODY -->
+			<div class="uk-modal-body">
+				<table class="uk-table uk-table-large uk-table-divider" id="template_savefiles_table">
+					<thead>
+						<tr class="uk-text-large">
+							<th class="uk-table-expand"><span class="uk-text-large">Name</span></th>
+							<th class="uk-width-1-6"><span class="uk-text-large">File</span></th>
+							<th class="uk-width-small"><span class="uk-text-large">Delete</span></th>
 						</tr>
-					</table>
-					<button type="button" class="btn btn-success col-sm-offset-9" id="template_save_add" onclick="add_template_save()">Add new templatesave</button>
-					<br><br>
+					</thead>
+					<tbody>
+						<!-- TBODY -->
+					</tbody>
+				</table>
+				<div class="uk-text-right">
+					<button type="button" class="uk-button uk-button-primary" id="template_save_add" onclick="add_template_save()">Add new templatesave</button>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" onclick="template_saves_save_changes()">Save changes</button>
-				</div>
+			</div>
+			<!-- MODAL FOOTER -->
+			<div class="uk-modal-footer uk-text-right">
+				<button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+				<button class="uk-button uk-button-primary" onclick="template_saves_save_changes()" type="button">Save changes</button>
 			</div>
 		</div>
 	</div>
 
-	<main>
-
+<!-- MAIN -->
+	<main class="uk-container uk-container-large">
 		<div style="display:none" id="small_message_container">
 			<span id="small_message">That's not the correct file, please select ffdec.bat for windows, and ffdec.sh for linux/mac.</span>
 			<span style="cursor:pointer;color:darkred;" onclick="$('#small_message_container').slideUp()" class="glyphicon glyphicon-remove"></span>
 		</div>
 
 		<div class="container">
-			<br>
-			<h1 style="text-align:center">Out There Somewhere - TAS tool</h1>
-			<br>
-			<div class="well" style="display:flex;justify-content:space-around;align-items:center;">
-				<div class="input-group col-sm-3">
-				<span class="input-group-addon"><label style="margin:0">Final boss start frame:</label></span>
-				<input id="boss_frame">
+
+			<h1 class="uk-text-center uk-heading-line uk-margin-top"><span>Out There Somewhere TAS Tool</span></h1>
+
+			<div class="uk-section uk-section-muted uk-section-small uk-flex uk-flex-around">
+
+				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
+					<span class="uk-text-bold uk-margin-small-right">Final boss start frame:</span>
+					<input class="uk-input uk-form-width-small uk-text-center" type="number" id="boss_frame1">
 				</div>
-				<div class="input-group col-sm-3">
-					 <span class="input-group-addon skipping">
-						 <label id="lbl_dialogue_skipping">Dialogue skipping:<input type="checkbox" onchange="toggle_dialogue_skipping()" id="cb_dialogue_skipping"></label>
-					 </span>
-					<input class="form-control" id="skip_frame" value="1">
+
+				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
+					<span class="uk-text-bold uk-margin-small-right" id="lbl_dialogue_skipping">Dialogue skipping:</span>
+					<input class="uk-checkbox" type="checkbox" onchange="toggle_dialogue_skipping()" id="cb_dialogue_skipping">
+					<div class="uk-form-width-small"><input class="uk-input uk-form-width-small uk-text-center" type="number" id="skip_frame1" value="1"></div>
     		</div>
-				<div class="input-group col-sm-4">
-				<span class="input-group-addon"><label style="margin:0">Template save:</label></span>
-				<select id="ddl_template_save" class="form-control">
-					<option value="none">None</option>
-					<option value="clear">Clear</option>
-				</select>
-				<div class="input-group-addon">
-				<button type="button" class="btn btn-primary" aria-label="Help" onclick="template_saves_edit_click()">Edit</button>
-			</div>
+
+				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
+					<span class="uk-text-bold uk-margin-small-right uk-text-nowrap">Template save:</span>
+					<select id="ddl_template_save" class="uk-select uk-width-small">
+						<option value="none">None</option>
+						<option value="clear">Clear</option>
+					</select>
+					<button type="button" class="uk-button uk-button-primary uk-margin-small-left" onclick="template_saves_edit_click()">Edit</button>
 				</div>
 			</div>
 
-			<br>
-			<table class="table table-bordered" id="sortable">
-				<tr id="header">
-					<th width="50"></th>
-					<th>Frame</th>
-					<th>Horizontal</th>
-					<th>Vertical</th>
-					<th>Teleshot</th>
-					<th>Gauss</th>
-					<th>Jump</th>
-					<th>Custom jump</th>
-					<th></th>
+
+			<table class="uk-table uk-text-center" id="sortable">
+				<thead>
+				<tr class="uk-text-large">
+					<th class="uk-width-small"></th>
+					<th class="uk-width-small"><span class="uk-text-large">Frame</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Horizontal</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Vertical</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Teleshot</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Gauss</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Jump</span></th>
+					<th class="uk-width-small uk-text-nowrap"><span class="uk-text-large">Custom jump</span></th>
+					<th class="uk-width-small"></th>
 				</tr>
+			</thead>
+			</table>
+
+			<table style="visibility: hidden" class="uk-table uk-text-center" id="pseudo_sortable">
+				<thead>
+				<tr class="uk-text-large">
+					<th class="uk-width-small"></th>
+					<th class="uk-width-small"><span class="uk-text-large">Frame</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Horizontal</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Vertical</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Teleshot</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Gauss</span></th>
+					<th class="uk-width-small"><span class="uk-text-large">Jump</span></th>
+					<th class="uk-width-small uk-text-nowrap"><span class="uk-text-large">Custom jump</span></th>
+					<th class="uk-width-small"></th>
+				</tr>
+			</thead>
 			</table>
 		</div>
 	</main>
+
+	<!-- SCRIPTS/ETC -->
 	<script>
 	// FOR DEBUGGING!
 	document.addEventListener("keydown", function (e) {
@@ -190,14 +244,16 @@
 			location.reload();
 		}
 	});
-</script>
-<script src="settings.js"></script>
-<script src="utils.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-<script src="..\node_modules\bootstrap\dist\js\bootstrap.min.js"></script>
-<script src="save_load.js"></script>
-<script src="run_compile.js"></script>
-<script src="edit.js"></script>
-<script src="template_saves.js"></script>
+	</script>
+	<script src="settings.js"></script>
+	<script src="utils.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+	<script src="..\node_modules\dragula\dist\dragula.min.js"></script>
+	<script src="..\node_modules\uikit\dist\js\uikit.min.js"></script>
+	<script src="..\node_modules\uikit\dist\js\uikit-icons.min.js"></script>
+	<script src="save_load.js"></script>
+	<script src="run_compile.js"></script>
+	<script src="edit.js"></script>
+	<script src="template_saves.js"></script>
 </body>
 </html>

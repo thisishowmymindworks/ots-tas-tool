@@ -34,7 +34,8 @@ function save_settings() {
 
   try {
     fs.outputJsonSync(settings_file, settings)
-    $('#settings_modal').modal('hide');
+    //$('#settings_modal').modal('hide');
+    UIkit.modal(settings_modal).hide()
   } catch (e) {
     // PROBABLY NEED TO NOT CLOSE MODAL AND SHOW ERROR IN SETTINGS MENU
     flash_message_small('Could not save settings!','error')
@@ -48,25 +49,25 @@ function open_settings_menu() {
   var steamTab = document.getElementById('settings_tab_steam')
 
   if (fs.pathExistsSync(settings.steam.otsPath)) {
-    steamTab.querySelector('.ots_path').value = settings.steam.otsPath
+    steamTab.querySelector('[data-path-type="ots_path"]').value = settings.steam.otsPath
   }
 
   if (fs.pathExistsSync(settings.steam.savefilesPath)) {
-    steamTab.querySelector('.savefile_path').value = settings.steam.savefilesPath
+    steamTab.querySelector('[data-path-type="savefile_path"]').value = settings.steam.savefilesPath
   }
 
   var itchTab = document.getElementById('settings_tab_itch')
 
   if (fs.pathExistsSync(settings.itch.otsPath)) {
-    itchTab.querySelector('.ots_path').value = settings.itch.otsPath
+    itchTab.querySelector('[data-path-type="ots_path"]').value = settings.itch.otsPath
   }
 
   if (fs.pathExistsSync(settings.steam.savefilesPath)) {
-    itchTab.querySelector('.savefile_path').value = settings.itch.savefilesPath
+    itchTab.querySelector('[data-path-type="savefile_path"]').value = settings.itch.savefilesPath
   }
 
   if (fs.pathExistsSync(settings.ffdecPath)) {
-    document.querySelector('.ffdec_path').value = settings.ffdecPath
+    document.querySelector('[data-path-type="ffdec_path"]').value = settings.ffdecPath
   }
 
   use_which_ots.value = settings.useWhichOts
@@ -75,7 +76,8 @@ function open_settings_menu() {
   settings_tab_itch.style.display = 'none'
   document.getElementById('settings_tab_'+settings.useWhichOts).style.display = 'flex'
 
-  $('#settings_modal').modal('show');
+  //$('#settings_modal').modal('show');
+  UIkit.modal(settings_modal).show()
 }
 
 function settings_set_path(event) {
@@ -91,7 +93,7 @@ function settings_set_path(event) {
   }
 
   if (event.target.getAttribute('data-action') === 'set-path') {
-    let pathType = event.target.previousElementSibling.classList[0]
+    let pathType = event.target.previousElementSibling.getAttribute('data-path-type')
     let options = dialogOptions[pathType]
     let selectedPath = get_path_from_dialog(options)
     if (selectedPath && (!allowedExtensions.hasOwnProperty(pathType) || allowedExtensions[pathType].includes(path.parse(selectedPath).ext))) {

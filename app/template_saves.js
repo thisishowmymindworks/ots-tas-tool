@@ -1,6 +1,6 @@
 function template_saves_edit_click() {
   var table = document.getElementById("template_savefiles_table");
-  table.getElementsByTagName("tbody")[0].innerHTML = table.rows[0].innerHTML;
+  table.getElementsByTagName("tbody")[0].innerHTML = '';
 
   var template_saves = template_saves_to_list()
   for (var i in template_saves) {
@@ -8,7 +8,7 @@ function template_saves_edit_click() {
     let data = template_saves[i]['savefile']
     create_template_save_table_row(table, name, data)
   }
-  $('#template_save_modal').modal('show');
+  UIkit.modal(template_save_modal).show()
 }
 
 function template_saves_save_changes() {
@@ -17,15 +17,15 @@ function template_saves_save_changes() {
     savelist.push({'name':this.value, 'savefile':$(this).data('savefile')})
   })
   load_template_saves(savelist);
-  $('#template_save_modal').modal('hide');
+  UIkit.modal(template_save_modal).hide()
   return;
 }
 
 function create_template_save_table_row(table, name, data) {
-  var row = table.insertRow();
-  $(row.insertCell()).append($('<input class="form-control" value="' + name + '">').data('savefile', data));
-  row.insertCell().innerHTML = '<a class="button" onclick="set_or_change_templatesave(this)">Set/Change</a>';
-  row.insertCell().innerHTML = '<i style="color:darkred;" onclick="remove_template_save(this)" class="glyphicon glyphicon-remove button"></i>'
+  var row = table.getElementsByTagName("tbody")[0].insertRow();
+  $(row.insertCell()).append($('<input class="uk-input" value="' + name + '">').data('savefile', data));
+  row.insertCell().innerHTML = '<a class="uk-button uk-button-default" onclick="set_or_change_templatesave(this)">Set/Change</a>';
+  row.insertCell().innerHTML = '<a class="uk-button uk-button-danger" onclick="remove_template_save(this)">Remove</a>'
 }
 
 function set_or_change_templatesave(button) {

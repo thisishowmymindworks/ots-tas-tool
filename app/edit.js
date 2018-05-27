@@ -1,7 +1,15 @@
 $(function() {
 
-	$("#sortable").sortable({items:"tr.entry",handle:".drag_handle"});
-	$("#sortable").disableSelection();
+	//$("#sortable").sortable({items:"tr.entry",handle:".drag_handle"});
+	//$("#sortable").disableSelection();
+	dragula([document.getElementById('sortable')], {
+		mirrorContainer: document.getElementById('pseudo_sortable'),
+		revertOnSpill: true,
+	  moves: function (el, container, handle) {
+	    return handle.classList.contains('drag_handle');
+	  }
+	});
+
 	$(".frame_input, #boss_frame, #skip_frame").spinner({min: 1});
 	try {
 		$(".entry input[type=checkbox]").checkboxradio();
@@ -28,12 +36,12 @@ function add_frames_between(start, end, delta) {
 
 function createActionRow(frameNumber) {
 	var row = $("<tr class='entry action'><td class='drag_handle' style='vertical-align:middle;'>☰</td></tr>")
-	row.append("<td><input class='frame_input' value='" + frameNumber + "''></td>")
-	row.append("<td><select class='form-control hor'><option value='none'>None</option><option value='-1'>Left</option><option value='1'>Right</option><option value='0'>Stop</option></select></td>")
-	row.append("<td><select class='form-control ver'><option value='none'>None</option><option value='-1'>Up</option><option value='1'>Down</option><option value='0'>Stop</option></select></td>")
-	row.append("<td><label><input class='tele' type='checkbox' value='true'></label></td><td><label><input class='gauss' type='checkbox' value='true'></label></td><td><label><input class='jump' type='checkbox' value='true'></label></td>")
-	row.append("<td><select class='form-control custom_jump'><option value='none'>None</option><option value='true'>Start</option><option value='false'>Stop</option></select></td>")
-	row.append("<td style='vertical-align:middle;'><i onclick='duplicate(this)' class='glyphicon glyphicon-duplicate button'></i><i onclick='remove(this)' style='color:darkred;' class='glyphicon glyphicon-remove button'></i></td>")
+	row.append("<td class='uk-width-small uk-text-center'><input class='frame_input' value='" + frameNumber + "''></td>")
+	row.append("<td class='uk-width-small uk-text-center'><select class='form-control hor'><option value='none'>None</option><option value='-1'>Left</option><option value='1'>Right</option><option value='0'>Stop</option></select></td>")
+	row.append("<td class='uk-width-small uk-text-center'><select class='form-control ver'><option value='none'>None</option><option value='-1'>Up</option><option value='1'>Down</option><option value='0'>Stop</option></select></td>")
+	row.append("<td class='uk-width-small uk-text-center'><label><input class='tele' type='checkbox' value='true'></label></td><td><label><input class='gauss' type='checkbox' value='true'></label></td><td><label><input class='jump' type='checkbox' value='true'></label></td>")
+	row.append("<td class='uk-width-small uk-text-center'><select class='form-control custom_jump'><option value='none'>None</option><option value='true'>Start</option><option value='false'>Stop</option></select></td>")
+	row.append("<td class='uk-width-small uk-text-center' style='vertical-align:middle;'><i onclick='duplicate(this)' class='glyphicon glyphicon-duplicate button'></i><i onclick='remove(this)' style='color:darkred;' class='glyphicon glyphicon-remove button'></i></td>")
 	row.find(".frame_input").spinner({min: 1});
 	row.find("input[type=checkbox]").checkboxradio();
 	row.find("select").change(function() {
