@@ -1,6 +1,5 @@
 // PACKAGES
 window.$ = window.jQuery = require('jquery');
-require('jquery-mousewheel')($);
 const path = require('path')
 const remote = require('electron').remote;
 const dialog = remote.dialog;

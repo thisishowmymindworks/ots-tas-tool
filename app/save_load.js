@@ -100,7 +100,6 @@ function clearTAS() {
 	$('#boss_frame').val("")
 	$('#skip_frame').val(1)
 	$('#cb_dialogue_skipping').prop('checked',false)
-	toggle_dialogue_skipping()
 }
 
 function newFile() {

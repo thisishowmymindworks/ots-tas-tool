@@ -4,15 +4,11 @@
 	<meta charset="utf-8">
 	<title>OTS TAS Tool</title>
 	<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
-
 	<link rel="stylesheet" href="..\node_modules\uikit\dist\css\uikit.min.css">
 	<link rel="stylesheet" href="..\node_modules\dragula\dist\dragula.min.css">
 	<link rel="stylesheet" href="style.css">
 </head>
-<body>
-	<!-- MESSAGES -->
-	<div style="display:none;" id="flash_container_large"><h1 style="display:none;" id="flash_message_large"></h1></div>
-
+<body onwheel="return true;">
 	<!-- NAVBAR -->
 	<nav class="uk-navbar-container uk-dark drag" uk-navbar="mode: click;">
 		<div class="uk-navbar-left no-drag">
@@ -82,42 +78,42 @@
 				<h1 class="uk-modal-title">Settings</h1>
 			</div>
 			<!-- MODAL BODY -->
-			<div class="uk-modal-body settings_container">
+			<div class="uk-modal-body settings-container">
 				<div class="form-border-header">
 					<span>OTS version:</span>
-					<select class="uk-select uk-form-width-medium" id="use_which_ots" onchange="$('.settings_tab').hide();$('#settings_tab_'+event.target.value).show()">
+					<select class="uk-select uk-form-width-medium" id="use-which-ots" onchange="$('.settings_tab').hide();$('#settings_tab_'+event.target.value).show()">
 						<option value="steam">Steam</option>
 						<option value="itch">Itch.io</option>
 					</select>
 				</div>
 
-				<div class="settings_tab_container uk-margin-bottom">
-					<div class="settings_tab uk-margin-top" id="settings_tab_steam">
-						<div class="settings_row">
-							<input data-path-type="ots_path" class="uk-input" type="text" disabled>
+				<div class="settings-tab-container uk-margin-bottom">
+					<div class="settings-tab uk-margin-top" id="settings-tab-steam">
+						<div class="settings-row">
+							<input data-path-type="otsPath" class="uk-input" type="text" disabled>
 							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set OTS path</button>
 						</div>
-						<div class="settings_row">
-							<input data-path-type="savefile_path" class="uk-input" type="text" disabled>
+						<div class="settings-row">
+							<input data-path-type="savefilePath" class="uk-input" type="text" disabled>
 							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set savefile path</button>
 						</div>
 					</div>
 
-					<div class="settings_tab uk-margin-top" id="settings_tab_itch">
-						<div class="settings_row">
-							<input data-path-type="ots_path" class="uk-input" type="text" disabled>
+					<div class="settings-tab uk-margin-top" id="settings-tab-itch">
+						<div class="settings-row">
+							<input data-path-type="otsPath" class="uk-input" type="text" disabled>
 							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set OTS path</button>
 						</div>
-						<div class="settings_row">
-							<input data-path-type="savefile_path" class="uk-input" type="text" disabled>
+						<div class="settings-row">
+							<input data-path-type="savefilePath" class="uk-input" type="text" disabled>
 							<button type="button" data-action="set-path" class="uk-button uk-button-default">Set savefile path</button>
 						</div>
 					</div>
 				</div>
 
-				<div class="settings_tab_container uk-margin-bottom">
-					<div class="settings_row">
-						<input class="uk-input" data-path-type="ffdec_path" type="text" disabled>
+				<div class="settings-tab-container uk-margin-bottom">
+					<div class="settings-row">
+						<input class="uk-input" data-path-type="ffdecPath" type="text" disabled>
 						<button type="button" data-action="set-path" class="uk-button uk-button-default">Set ffdec path</button>
 					</div>
 				</div>
@@ -180,13 +176,15 @@
 
 				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
 					<span class="uk-text-bold uk-margin-small-right">Final boss start frame:</span>
-					<input class="uk-input uk-form-width-small uk-text-center" type="number" id="boss_frame1">
+					<input class="uk-input uk-form-width-small uk-text-center" min="1" type="number" id="boss_frame1">
 				</div>
 
 				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
 					<span class="uk-text-bold uk-margin-small-right" id="lbl_dialogue_skipping">Dialogue skipping:</span>
-					<input class="uk-checkbox" type="checkbox" onchange="toggle_dialogue_skipping()" id="cb_dialogue_skipping">
-					<div class="uk-form-width-small"><input class="uk-input uk-form-width-small uk-text-center" type="number" id="skip_frame1" value="1"></div>
+					<input class="uk-checkbox cb-dialogue-skipping large-checkbox" type="checkbox" id="cb_dialogue_skipping">
+					<div class="uk-form-width-small skip-frame-container">
+						<input class="uk-input uk-form-width-small uk-text-center skip-frame-input" min="0" type="number" id="skip_frame" value="1">
+					</div>
     		</div>
 
 				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
@@ -200,23 +198,26 @@
 			</div>
 
 
-			<table class="uk-table uk-text-center" id="sortable">
+			<table class="uk-table uk-text-center uk-table-divider">
 				<thead>
-				<tr class="uk-text-large">
-					<th class="uk-width-small"></th>
-					<th class="uk-width-small"><span class="uk-text-large">Frame</span></th>
-					<th class="uk-width-small"><span class="uk-text-large">Horizontal</span></th>
-					<th class="uk-width-small"><span class="uk-text-large">Vertical</span></th>
-					<th class="uk-width-small"><span class="uk-text-large">Teleshot</span></th>
-					<th class="uk-width-small"><span class="uk-text-large">Gauss</span></th>
-					<th class="uk-width-small"><span class="uk-text-large">Jump</span></th>
-					<th class="uk-width-small uk-text-nowrap"><span class="uk-text-large">Custom jump</span></th>
-					<th class="uk-width-small"></th>
-				</tr>
-			</thead>
+					<tr class="uk-text-large">
+						<th class="uk-width-small"></th>
+						<th class="uk-width-small"><span class="uk-text-large">Frame</span></th>
+						<th class="uk-width-small"><span class="uk-text-large">Horizontal</span></th>
+						<th class="uk-width-small"><span class="uk-text-large">Vertical</span></th>
+						<th class="uk-width-small"><span class="uk-text-large">Teleshot</span></th>
+						<th class="uk-width-small"><span class="uk-text-large">Gauss</span></th>
+						<th class="uk-width-small"><span class="uk-text-large">Jump</span></th>
+						<th class="uk-width-small uk-text-nowrap"><span class="uk-text-large">Custom jump</span></th>
+						<th class="uk-width-small"></th>
+					</tr>
+				</thead>
+				<tbody id="tas-table-tbody">
+
+				</tbody>
 			</table>
 
-			<table style="visibility: hidden" class="uk-table uk-text-center" id="pseudo_sortable">
+			<table style="visibility: hidden" class="uk-table uk-text-center">
 				<thead>
 				<tr class="uk-text-large">
 					<th class="uk-width-small"></th>
@@ -230,9 +231,69 @@
 					<th class="uk-width-small"></th>
 				</tr>
 			</thead>
+			<tbody id="tas-table-tbody-mirror">
+
+			</tbody>
 			</table>
 		</div>
 	</main>
+
+	<template id="template-action-row">
+		<tr class="entry action">
+			<td class="drag-handle uk-text-middle uk-width-small">☰</td>
+			<td class="uk-width-small uk-text-center">
+				<input class="frame-input uk-input uk-form-width-small uk-text-center" uk-tooltip="Frame Number" type="number" min="1" value="1">
+			</td>
+			<td class="uk-width-small uk-text-center">
+				<select class="hor uk-select uk-width-small" uk-tooltip="Horizontal">
+					<option value="none">None</option>
+					<option value="-1">Left</option>
+					<option value="1">Right</option>
+					<option value="0">Stop</option>
+				</select>
+			</td>
+			<td class="uk-width-small uk-text-center">
+				<select class="ver uk-select uk-width-small" uk-tooltip="Vertical">
+					<option value="none">None</option>
+					<option value="-1">Up</option>
+					<option value="1">Down</option>
+					<option value="0">Stop</option>
+				</select>
+			</td>
+			<td class="uk-width-small uk-text-center">
+				<input class="tele uk-checkbox large-checkbox" uk-tooltip="Teleshot" type="checkbox" value="true">
+			</td>
+			<td class="uk-width-small uk-text-center">
+				<input class="gauss uk-checkbox large-checkbox" uk-tooltip="Gauss Gun" type="checkbox" value="true">
+			</td>
+			<td class="uk-width-small uk-text-center">
+				<input class="jump uk-checkbox large-checkbox" uk-tooltip="Jump" type="checkbox" value="true">
+			</td>
+			<td class="uk-width-small uk-text-center">
+				<select class="custom-jump uk-select uk-width-small" uk-tooltip="Custom Jump">
+					<option value="none">None</option>
+					<option value="true">Start</option>
+					<option value="false">Stop</option>
+				</select>
+			</td>
+			<td class="uk-width-small uk-text-center uk-text-middle">
+				<a class="uk-icon uk-icon-link" uk-tooltip="Duplicate" data-action="duplicate" uk-icon="icon: copy; ratio: 1.6"></a>
+				<a class="uk-icon uk-icon-link uk-margin-small-left" data-action="delete" uk-tooltip="Delete" style="color:darkred;" uk-icon="icon: trash; ratio: 1.7"></a>
+			</td>
+		</tr>
+	</template>
+
+	<template id="template-comment-row">
+		<tr class="entry comment">
+			<td class="drag-handle uk-text-middle">☰</td>
+			<td colspan="7" class="uk-width-large">
+				<input class="comment-input uk-input uk-text-large" value="">
+			</td>
+			<td class="uk-width-small uk-text-center uk-text-middle">
+				<a class="uk-icon uk-icon-link uk-margin-small-left" data-action="delete" uk-tooltip="Delete" style="color:darkred;" uk-icon="icon: trash; ratio: 1.7"></a>
+			</td>
+		</tr>
+	</template>
 
 	<!-- SCRIPTS/ETC -->
 	<script>

@@ -1,87 +1,138 @@
-$(function() {
+/* global dragula, $, win, settings_set_path */
+$(function () {
+  dragula([document.getElementById('tas-table-tbody')], {
+    mirrorContainer: document.getElementById('tas-table-tbody-mirror'),
+    revertOnSpill: true,
+    moves: function (el, container, handle) {
+      return handle.classList.contains('drag-handle')
+    }
+  })
 
-	//$("#sortable").sortable({items:"tr.entry",handle:".drag_handle"});
-	//$("#sortable").disableSelection();
-	dragula([document.getElementById('sortable')], {
-		mirrorContainer: document.getElementById('pseudo_sortable'),
-		revertOnSpill: true,
-	  moves: function (el, container, handle) {
-	    return handle.classList.contains('drag_handle');
-	  }
-	});
+  if (win.isMaximized()) {
+    $('#menu_maximize').html('&#x1f5d7;')
+  } else {
+    $('#menu_maximize').html('&#x1f5d6;')
+  }
 
-	$(".frame_input, #boss_frame, #skip_frame").spinner({min: 1});
-	try {
-		$(".entry input[type=checkbox]").checkboxradio();
-	} catch(e) {}
+  document.querySelector('.settings-container').addEventListener('click', settings_set_path)
+})
 
-	if (win.isMaximized()) {
-		$('#menu_maximize').html('&#x1f5d7;')
-	} else {
-		$('#menu_maximize').html('&#x1f5d6;')
-	}
+let edit = (function () {
+  // VARIABLES
+  let templateActionRow = document.getElementById('template-action-row')
+  let templateCommentRow = document.getElementById('template-comment-row')
+  let tasTable = document.getElementById('tas-table-tbody')
+  let defaultRowOptions = {
+    '.frame-input': {
+      'attribute': 'value',
+      'value': '1'
+    },
+    '.hor': {
+      'attribute': 'value',
+      'value': 'none'
+    },
+    '.ver': {
+      'attribute': 'value',
+      'value': 'none'
+    },
+    '.tele': {
+      'attribute': 'checked',
+      'value': false
+    },
+    '.gauss': {
+      'attribute': 'checked',
+      'value': false
+    },
+    '.jump': {
+      'attribute': 'checked',
+      'value': false
+    },
+    '.custom-jump': {
+      'attribute': 'value',
+      'value': 'none'
+    }
+  }
 
-	document.querySelector('.settings_container').addEventListener('click', settings_set_path)
-});
+  // EVENT DELEGATION
+  tasTable.addEventListener('click', function (event) {
+    let dataAction = event.target.getAttribute('data-action')
+    let row = event.target.closest('tr')
 
+    if (dataAction === 'duplicate') {
+      duplicateRow(row)
+    } else if (dataAction === 'delete') {
+      deleteRow(row)
+    }
+  })
 
-function add_frames_between(start, end, delta) {
-	$('#sortable .action .frame_input').each(function() {
-		var value = +this.value
-		if (value > start && value < end) {
-			this.value = value+delta
-		}
-	})
-}
+  tasTable.addEventListener('input', function (event) {
+    let tagType = event.target.tagName
+    if (tagType === 'SELECT') {
+      event.target.classList.toggle('dropdown-action-selected', event.target.selectedIndex)
+    }
+  })
 
-function createActionRow(frameNumber) {
-	var row = $("<tr class='entry action'><td class='drag_handle' style='vertical-align:middle;'>☰</td></tr>")
-	row.append("<td class='uk-width-small uk-text-center'><input class='frame_input' value='" + frameNumber + "''></td>")
-	row.append("<td class='uk-width-small uk-text-center'><select class='form-control hor'><option value='none'>None</option><option value='-1'>Left</option><option value='1'>Right</option><option value='0'>Stop</option></select></td>")
-	row.append("<td class='uk-width-small uk-text-center'><select class='form-control ver'><option value='none'>None</option><option value='-1'>Up</option><option value='1'>Down</option><option value='0'>Stop</option></select></td>")
-	row.append("<td class='uk-width-small uk-text-center'><label><input class='tele' type='checkbox' value='true'></label></td><td><label><input class='gauss' type='checkbox' value='true'></label></td><td><label><input class='jump' type='checkbox' value='true'></label></td>")
-	row.append("<td class='uk-width-small uk-text-center'><select class='form-control custom_jump'><option value='none'>None</option><option value='true'>Start</option><option value='false'>Stop</option></select></td>")
-	row.append("<td class='uk-width-small uk-text-center' style='vertical-align:middle;'><i onclick='duplicate(this)' class='glyphicon glyphicon-duplicate button'></i><i onclick='remove(this)' style='color:darkred;' class='glyphicon glyphicon-remove button'></i></td>")
-	row.find(".frame_input").spinner({min: 1});
-	row.find("input[type=checkbox]").checkboxradio();
-	row.find("select").change(function() {
-		$(this).toggleClass('dropdownActionSelected', $(this).val() != 'none')
-	})
-	return row;
-}
+  // "PRIVATE" FUNCTIONS
+  function createActionRow (options = defaultRowOptions) {
+    let newRow = document.importNode(templateActionRow.content, true)
 
-function duplicate(btn) {
-	var oldRow = $(btn).parent().parent()
-	var row = createActionRow(oldRow.find(".frame_input").val());
-	row.insertAfter(oldRow)
-}
+    for (let query in options) {
+      let data = options[ query ]
+      newRow.querySelector(query)[data.attribute] = data.value
+    }
 
-function addAction() {
-	$("#sortable").append(createActionRow(1))
-}
+    let dropDowns = newRow.querySelectorAll('select')
+    for (let dropDown of dropDowns) {
+      dropDown.classList.toggle('dropdown-action-selected', dropDown.selectedIndex)
+    }
 
-function createComment(comment) {
-	var row = $("<tr class='entry comment'><td class='drag_handle' style='vertical-align:middle;'>☰</td></tr>")
-	row.append("<td colspan='7'><input class='comment_input form-control' value='" +comment+ "'></td>")
-	row.append("<td style='vertical-align:middle;'><i onclick='remove(this)' style='color:darkred;' class='glyphicon glyphicon-remove button'></i></td>")
-	return row;
-}
+    return newRow
+  }
 
-function addComment() {
-	var row = createComment('');
-	$("#sortable").append(row)
-}
+  function createCommentRow (comment = '') {
+    let newRow = document.importNode(templateCommentRow.content, true)
+    newRow.querySelector('.comment-input').value = comment
 
-function remove(btn) {
-	var row = $(btn).parent().parent();
-	row.remove();
-}
+    return newRow
+  }
 
-function toggle_dialogue_skipping() {
-	var checked = $("#cb_dialogue_skipping")[0].checked;
-	if (checked) {
-		$('span.skipping + span.ui-spinner').animate({width:'100px'})
-	} else {
-		$('span.skipping + span.ui-spinner').animate({width:'0'})
-	}
-}
+  function duplicateRow (row) {
+    let frameNumber = row.querySelector('.frame-input').value
+    let options = Object.assign({}, defaultRowOptions, {'.frame-input': {'attribute': 'value', 'value': frameNumber}})
+    let newRow = createActionRow(options)
+
+    tasTable.insertBefore(newRow, row.nextSibling)
+  }
+
+  function deleteRow (row) {
+    tasTable.deleteRow(row.rowIndex - 1) // Minus one to compensate for the header
+  }
+
+  // EXPOSED FUNCTIONS
+  function addFramesBetween (start, end, delta) {
+    let frameInputs = document.querySelectorAll('.action .frame-input')
+    for (let frameInput of frameInputs) {
+      let value = +frameInput.value
+      if (value > start && value < end) {
+        frameInput.value = (value + delta)
+      }
+    }
+  }
+
+  function addAction (options) {
+    let newActionRow = createActionRow(options)
+
+    tasTable.appendChild(newActionRow)
+  }
+
+  function addComment (comment) {
+    let newCommentRow = createCommentRow(comment)
+    tasTable.appendChild(newCommentRow)
+  }
+
+  return {
+    addFramesBetween: addFramesBetween,
+    addActionRow: addAction,
+    addCommentRow: addComment
+  }
+})()

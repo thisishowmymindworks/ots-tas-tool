@@ -10,6 +10,8 @@
   visibility: visible;
 }
 
+svg { pointer-events: none; }
+
 .uk-placeholder {
   border-color: #999;
 }
@@ -20,6 +22,11 @@
 
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.drag-handle {
+  vertical-align:middle;
 }
 
 .entry option {
@@ -27,63 +34,70 @@ input[type=number]::-webkit-inner-spin-button {
   color: black;
 }
 
-.dropdownActionSelected {
+.entry option[selectedIndex="1"] {
   background: #007fff;
   color: white;
 }
 
-#cb_dialogue_skipping {/* SWITCH TO A GENERAL CHECKBOX CLASS */
-  margin: 0 5px;
-  zoom: 2;
+.dropdown-action-selected, .dropdown-action-selected:focus {
+  background: #007fff;
+  color: white;
 }
 
-.settings_container {
+.large-checkbox {
+  background-size: contain;
+  height: 35px;
+  margin: 0 5px;
+  width: 35px;
+}
+
+.settings-container {
   padding: 15px 50px;
 }
 
 .form-border-header {
+  background: white;
+  display: inline;
+  left: 10px;
+  padding: 0 5px;
   position: relative;
   top: 22px;
-  left: 10px;
-  background: white;
-  padding: 0 5px;
-  display: inline;
 }
 
-.settings_tab_container {
+.settings-tab-container {
   border: 1px solid #666;
   padding: 20px 10px;
 }
 
-.settings_tab {
+.settings-tab {
   display: flex;
   flex-direction: column;
   height: 100px;
   justify-content: space-around;
 }
 
-.settings_row {
+.settings-row {
   display: flex;
   justify-content: space-between;
 }
 
-.settings_row :first-child {
+.settings-row :first-child {
   flex-basis: 100px;
   flex-grow: 7;
   margin-right: 20px;
 }
 
-.settings_row :last-child {
+.settings-row :last-child {
   flex-basis: 100px;
   flex-grow: 1;
   margin-left: 10px;
 }
 
-#skip_frame1 {
+.skip-frame-input {
   transition: width 1s, padding 1s;
 }
 
-.test {
-  width: 0;
+.cb-dialogue-skipping:not(:checked) ~ .skip-frame-container > .skip-frame-input {
   padding: 0;
+  width: 0;
 }
