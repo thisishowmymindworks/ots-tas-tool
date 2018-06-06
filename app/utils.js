@@ -1,21 +1,53 @@
 // PACKAGES
-window.$ = window.jQuery = require('jquery');
+window.$ = window.jQuery = require('jquery')
 const path = require('path')
-const remote = require('electron').remote;
-const dialog = remote.dialog;
-const fs = require('fs-extra');
-const shell = require('child_process');
-const iconv = require('iconv-lite');
-
+const remote = require('electron').remote
+const dialog = remote.dialog
+const fs = require('fs-extra') // MOVE INTO UTILS? MAYBE OTHERS AS WELL
+const shell = require('child_process')
+const iconv = require('iconv-lite')
 
 // GLOBAL VARS
-const win = remote.getCurrentWindow().removeAllListeners();
-const settings_file = path.join(remote.app.getPath('userData'),'\\otas.settings')
+const win = remote.getCurrentWindow().removeAllListeners()
+const settings_file = path.join(remote.app.getPath('userData'), '\\otas.settings')
 const readonly_scripts_dir = path.join(__dirname, '\\..\\files\\scripts')
 const scripts_dir = path.join(remote.app.getPath('userData'), '\\scripts')
 var current_save_file = "";
-var settings = load_settings();
+//var settings = load_settings();
 copy_script_files()
+
+let utils = (function () {
+  // VARIABLES
+  // EVENT DELEGATION
+  // "PRIVATE" FUNCTIONS
+  // EXPOSED FUNCTIONS
+  function readJson (path, options) {
+    return fs.readJsonSync(path, options)
+  }
+
+  function outputJson (path, data) {
+    return fs.outputJsonSync(path, data)
+  }
+
+  function pathExists (path) {
+    return fs.pathExistsSync(path)
+  }
+
+  function getPathFromDialog (filters) {
+    var pathArray = dialog.showOpenDialog(filters)
+    if (pathArray === undefined) {
+      return false
+    } else {
+      return pathArray[0]
+    }
+  }
+  return {
+    readJson: readJson,
+    outputJson: outputJson,
+    pathExists: pathExists,
+    pathFromDialog: getPathFromDialog
+  }
+})()
 
 win.on('maximize', function() {
   $('#menu_maximize').html('&#x1f5d7;')

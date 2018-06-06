@@ -29,7 +29,6 @@
 					</div>
 				</li>
 
-
 				<li>
 					<a href="#">Edit</a>
 					<div class="uk-navbar-dropdown uk-margin-remove-top">
@@ -69,7 +68,7 @@
 	</nav>
 
 	<!-- SETTINGS MODAL -->
-	<div id="settings_modal" class="no-drag uk-modal-container" uk-modal>
+	<div id="settings-modal" class="no-drag uk-modal-container" uk-modal>
 		<div class="uk-modal-dialog">
 			<!-- TOP RIGHT CLOSE BUTTON -->
 			<button class="uk-modal-close-default" type="button" uk-close></button>
@@ -176,14 +175,14 @@
 
 				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
 					<span class="uk-text-bold uk-margin-small-right">Final boss start frame:</span>
-					<input class="uk-input uk-form-width-small uk-text-center" min="1" type="number" id="boss_frame1">
+					<input class="uk-input uk-form-width-small uk-text-center" min="1" type="number" id="boss-frame">
 				</div>
 
 				<div class="uk-placeholder uk-margin-remove uk-padding-small uk-flex uk-flex-middle">
-					<span class="uk-text-bold uk-margin-small-right" id="lbl_dialogue_skipping">Dialogue skipping:</span>
-					<input class="uk-checkbox cb-dialogue-skipping large-checkbox" type="checkbox" id="cb_dialogue_skipping">
+					<span class="uk-text-bold uk-margin-small-right">Dialogue skipping:</span>
+					<input class="uk-checkbox cb-dialogue-skipping large-checkbox" type="checkbox" id="cb-dialogue-skipping">
 					<div class="uk-form-width-small skip-frame-container">
-						<input class="uk-input uk-form-width-small uk-text-center skip-frame-input" min="0" type="number" id="skip_frame" value="1">
+						<input class="uk-input uk-form-width-small uk-text-center skip-frame-input" min="0" type="number" id="skip-frame" value="1">
 					</div>
     		</div>
 
@@ -306,8 +305,8 @@
 		}
 	});
 	</script>
-	<script src="settings.js"></script>
 	<script src="utils.js"></script>
+  <script src="settings.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	<script src="..\node_modules\dragula\dist\dragula.min.js"></script>
 	<script src="..\node_modules\uikit\dist\js\uikit.min.js"></script>

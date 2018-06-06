@@ -1,4 +1,4 @@
-/* global dragula, $, win, settings_set_path */
+/* global dragula, $, win */
 $(function () {
   dragula([document.getElementById('tas-table-tbody')], {
     mirrorContainer: document.getElementById('tas-table-tbody-mirror'),
@@ -14,7 +14,7 @@ $(function () {
     $('#menu_maximize').html('&#x1f5d6;')
   }
 
-  document.querySelector('.settings-container').addEventListener('click', settings_set_path)
+  // document.querySelector('.settings-container').addEventListener('click', settings_set_path)
 })
 
 let edit = (function () {
@@ -22,35 +22,24 @@ let edit = (function () {
   let templateActionRow = document.getElementById('template-action-row')
   let templateCommentRow = document.getElementById('template-comment-row')
   let tasTable = document.getElementById('tas-table-tbody')
-  let defaultRowOptions = {
-    '.frame-input': {
-      'attribute': 'value',
-      'value': '1'
-    },
-    '.hor': {
-      'attribute': 'value',
-      'value': 'none'
-    },
-    '.ver': {
-      'attribute': 'value',
-      'value': 'none'
-    },
-    '.tele': {
-      'attribute': 'checked',
-      'value': false
-    },
-    '.gauss': {
-      'attribute': 'checked',
-      'value': false
-    },
-    '.jump': {
-      'attribute': 'checked',
-      'value': false
-    },
-    '.custom-jump': {
-      'attribute': 'value',
-      'value': 'none'
-    }
+  let actionRowAttributes = {
+    '.frame-input': 'value',
+    '.hor': 'value',
+    '.ver': 'value',
+    '.tele': 'checked',
+    '.gauss': 'checked',
+    '.jump': 'checked',
+    '.custom-jump': 'value'
+  }
+
+  let defaultActionRowValues = {
+    '.frame-input': '1',
+    '.hor': 'none',
+    '.ver': 'none',
+    '.tele': false,
+    '.gauss': false,
+    '.jump': false,
+    '.custom-jump': 'none'
   }
 
   // EVENT DELEGATION
@@ -73,12 +62,12 @@ let edit = (function () {
   })
 
   // "PRIVATE" FUNCTIONS
-  function createActionRow (options = defaultRowOptions) {
+  function createActionRow (values = defaultActionRowValues) {
     let newRow = document.importNode(templateActionRow.content, true)
 
-    for (let query in options) {
-      let data = options[ query ]
-      newRow.querySelector(query)[data.attribute] = data.value
+    for (let query in values) {
+      let data = values[query]
+      newRow.querySelector(query)[actionRowAttributes[query]] = data
     }
 
     let dropDowns = newRow.querySelectorAll('select')
@@ -98,7 +87,7 @@ let edit = (function () {
 
   function duplicateRow (row) {
     let frameNumber = row.querySelector('.frame-input').value
-    let options = Object.assign({}, defaultRowOptions, {'.frame-input': {'attribute': 'value', 'value': frameNumber}})
+    let options = Object.assign({}, defaultActionRowValues, {'.frame-input': frameNumber})
     let newRow = createActionRow(options)
 
     tasTable.insertBefore(newRow, row.nextSibling)
@@ -119,8 +108,8 @@ let edit = (function () {
     }
   }
 
-  function addAction (options) {
-    let newActionRow = createActionRow(options)
+  function addAction (values) {
+    let newActionRow = createActionRow(values)
 
     tasTable.appendChild(newActionRow)
   }
