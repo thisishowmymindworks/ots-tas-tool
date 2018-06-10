@@ -15,7 +15,7 @@ let settings = (function () {
     },
     'savefilePath': {
       defaultpath: remote.app.getPath('appData'),
-      title: 'Select the folder that contains OTS\' savefiles',
+      title: 'Select the folder that contains OTS\'s savefiles',
       properties: ['openDirectory']
     },
     'ffdecPath': {

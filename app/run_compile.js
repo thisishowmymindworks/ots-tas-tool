@@ -1,120 +1,143 @@
-function compile_to_json() {
-	var tas = {
-		"up_down": {},
-		"left_right": {},
-		"jump": {},
-		"teleshot": {},
-		"gauss": {},
-		"boss_frame": 9999999999,
-		"skip_frame": 9999999999,
-		"max_frame": 1}
+/* global settings, utils, path, iconv, shell */
 
+let runCompile = (function () {
+  // VARIABLES
+  let templateSaveDropDown = document.getElementById('ddl-template-save')
+  // EVENT DELEGATION
+  // "PRIVATE" FUNCTIONS
+  function compileToJson () {
+    let tasObject = {
+      'up_down': {},
+      'left_right': {},
+      'jump': {},
+      'teleshot': {},
+      'gauss': {},
+      'boss_frame': 9999999999,
+      'skip_frame': 9999999999,
+      'max_frame': 1
+    }
 
-	$(".action").each(function() {
-		var frame = $(this).find(".frame_input").val();
-		if (tas["max_frame"]<+frame) {
-			tas["max_frame"] = +frame
-		}
-		if ($(this).find(".hor").val() != 'none') {
-			tas["left_right"][frame] = +$(this).find(".hor").val();
-		}
-		if ($(this).find(".ver").val() != 'none') {
-			tas["up_down"][frame] = +$(this).find(".ver").val();
-		}
-		if ($(this).find(".tele").prop('checked')) {
-			tas["teleshot"][frame] = true;
-		}
-		if ($(this).find(".gauss").prop('checked')) {
-			tas["gauss"][frame] = true;
-		}
-		if ($(this).find(".jump").prop('checked')) {
-			tas["jump"][frame] = true;
-			tas["jump"][""+(+frame+25)] = false;
-		}
-		if ($(this).find(".custom_jump").val() != 'none') {
-			tas["jump"][frame] = JSON.parse($(this).find(".custom_jump").val());
-		}
-	})
-	if ($("#boss_frame").val() && +$("#boss_frame").val()>0) {
-		tas["boss_frame"] = +$("#boss_frame").val()
+    let actionRows = document.querySelectorAll('.action')
+    let skipFrame = document.getElementById('skip-frame').value
+    let bossFrame = actionRows.getElementById('boss-frame').value
 
-		if (tas["max_frame"] < (+tas["boss_frame"]+200)) {
-			tas["max_frame"] = (+tas["boss_frame"]+200)
-		}
-	}
+    for (let actionRow of actionRows) {
+      let frameStr = actionRow.querySelector('.frame-input')
+      let vertical = actionRow.querySelector('.ver').value
+      let horizontal = actionRow.querySelector('.hor').value
+      let teleShot = actionRow.querySelector('.tele').checked
+      let gaussShot = actionRow.querySelector('.gauss').checked
+      let jump = actionRow.querySelector('.jump').checked
+      let customJump = actionRow.querySelector('.custom-jump')
 
-	if ($('#cb_dialogue_skipping')[0].checked && ($("#skip_frame").val())) {
-		tas["skip_frame"] = +$("#skip_frame").val()
-	}
+      tasObject['max_frame'] = Math.max(tasObject['max_frame'], parseInt(frameStr), parseInt(bossFrame) + 200)
 
-	return tas;
-}
+      if (vertical !== 'none') {
+        tasObject['up_down'][frameStr] = parseInt(vertical)
+      }
 
-function compile_tas() {
-	if (!fs.existsSync(settings[settings['useWhichOts']]['otsPath'])) {
-		flash_message_small('Cannot compile tas since the OTS path has not been set, please do so in the settings menu','error')
-		return;
-	}
+      if (horizontal !== 'none') {
+        tasObject['left_right'][frameStr] = parseInt(horizontal)
+      }
 
-	try {
-		fs.outputJsonSync(path.join(settings[settings['useWhichOts']]['otsPath'], '..','/tas/otas.json'), compile_to_json())
-		return true;
-	} catch (e) {
-		flash_message_small('Error saving the TAS to file.','error')
-		console.log(e)
-		return false
-	}
+      if (teleShot) {
+        tasObject['teleshot'][frameStr] = true
+      }
 
-}
+      if (gaussShot) {
+        tasObject['gauss'][frameStr] = true
+      }
 
-function runTAS(should_compile) {
-	if (!fs.existsSync(settings[settings['useWhichOts']]['otsPath'])) {
-		flash_message_small('Cannot run OTS since the path has not been set, please do so in the settings menu','error')
-		return
-	}
+      if (jump) {
+        let jumpEnd = (parseInt(frameStr) + 25).toString()
+        tasObject['jump'][frameStr] = true
+        tasObject['jump'][jumpEnd] = false
+      }
 
-	if (should_compile) {
-		if (!compile_tas()) {
-			return false;
-		}
-	}
+      if (customJump !== 'none') {
+        tasObject['jump'][frameStr] = (customJump === 'true')
+      }
+    }
 
-	if (ddl_template_save.selectedIndex != 0) {
-			for (var i = 0;i<3;i++) {
-				var slot_path = path.join(settings[settings['useWhichOts']]['savefilesPath'], 'save'+i+'.dat');
-				if (fs.existsSync(slot_path)) {
-					fs.removeSync(slot_path);
-				}
-			}
+    if (bossFrame && bossFrame > 0) {
+      tasObject['boss_frame'] = bossFrame
+    }
 
-			let savefile = $(ddl_template_save.selectedOptions[0]).data('savefile');
+    if (document.getElementById('cb-dialogue-skipping').checked && skipFrame) {
+      tasObject['skip_frame'] = parseInt(skipFrame)
+    }
 
-			if (settings[settings['useWhichOts']]['savefilesPath'] && savefile) {
-				write_to_file(path.join(settings[settings['useWhichOts']]['savefilesPath'], 'save0.dat'), iconv.decode(savefile,'win1252'))
-			}
-	}
+    return tasObject
+  }
 
-	try {
-		shell.execSync('taskkill /IM \"' + settings[settings['useWhichOts']]['otsPath'] + '\"');
-	}
-	catch (e) {}
-	shell.exec('\"' + settings[settings['useWhichOts']]['otsPath'] + '\"')
-}
+  function compileTas () {
+    let otsPath = settings.get('otsPath')
 
-function install_components() {
-	if (replace_script('save.UserData', path.join(scripts_dir, settings['useWhichOts'], 'UserData(tas).as'))) {
-		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['useWhichOts'], 'ControlsProvider(tas).as'))) {
-			flash_message_small('TAS components successfully installed!','success')
-			return;
-		}
-	}
-}
+    if (!utils.pathExists(otsPath)) {
+      utils.flashSmallMessage('Cannot compile TAS since the OTS path has not been set, please do so in the settings menu', 'danger')
+    } else {
+      try {
+        utils.outputJson(path.join(otsPath, '..', '/tas/otas.json'), compileToJson())
+      } catch (e) {
+        utils.flashSmallMessage('Error saving the TAS to file', 'danger')
+        console.log(e)
+      }
+    }
+  }
+  // EXPOSED FUNCTIONS
+  function installComponents () {
+    if (utils.replaceScript('save.userData', 'UserData(tas).as')) {
+      if (utils.replaceScript('controls.ControlsProvider', 'ControlsProvider(tas).as')) {
+        utils.flashSmallMessage('TAS components successfully installed!', 'success')
+      }
+    }
+  }
 
-function uninstall_components() {
-	if (replace_script('save.UserData', path.join(scripts_dir, settings['useWhichOts'], 'UserData(vanilla).as'))) {
-		if (replace_script('controls.ControlsProvider', path.join(scripts_dir, settings['useWhichOts'], 'ControlsProvider(vanilla).as'))){
-			flash_message_small('TAS components successfully uninstalled!','success')
-			return;
-		}
-	}
-}
+  function uninstallComponents () {
+    if (utils.replaceScript('save.userData', 'UserData(vanilla).as')) {
+      if (utils.replaceScript('controls.ControlsProvider', 'ControlsProvider(vanilla).as')) {
+        utils.flashSmallMessage('TAS components successfully uninstalled!', 'success')
+      }
+    }
+  }
+
+  function runTas (shouldCompile) {
+    if (!utils.pathExists(settings.get('otsPath'))) {
+      utils.flashSmallMessage('Cannot run OTS since the path has not been set yet, please do so in the settings menu', 'danger')
+    } else {
+      let savefilesPath = settings.get('savefilesPath')
+      let otsPath = settings.get('otsPath')
+
+      if (shouldCompile) {
+        if (!compileTas()) {
+          return false
+        }
+      }
+
+      if (templateSaveDropDown.selectedIndex !== 0) {
+        for (let i = 0; i < 3; i++) {
+          let slotPath = path.join(savefilesPath, `save${i}.dat`)
+          if (utils.pathExists(slotPath)) {
+            utils.deleteFile(slotPath)
+          }
+        }
+
+        let savefile = templateSaveDropDown.saveFileData
+
+        if (savefilesPath && savefile) {
+          utils.writeToFile(path.join(savefilesPath, 'save0.dat'), iconv.decode(savefile, 'win1252'))
+        }
+      }
+
+      try {
+        shell.execSync(`taskkill /IM "${path.basename(otsPath)}"`)
+      } catch (e) {}
+      shell.exec(`"${otsPath}`)
+    }
+  }
+  return {
+    installComponents: installComponents,
+    uninstallComponents: uninstallComponents,
+    runTas: runTas
+  }
+})()

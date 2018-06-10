@@ -1,120 +1,130 @@
-function tasToJSON() {
-	var js_object = {
-		'entries': [],
-		'boss_frame': $('#boss_frame').val(),
-		'should_skip_dialogue': $('#cb_dialogue_skipping')[0].checked,
-		'dialogue_skip_frame': $('#skip_frame').val(),
-		'template-saves' : template_saves_to_list()
-	};
-	$(".entry").each(function() {
-		var entry = {};
-		if ($(this).hasClass('comment')) {
-			entry.type = 'comment';
-			entry.comment = $(this).find(".comment_input").val()
-		} else {
-			entry.type = 'action';
-			entry.frame = $(this).find(".frame_input").val();
-			entry.hor = $(this).find(".hor").val();
-			entry.ver = $(this).find(".ver").val();
-			entry.tele = $(this).find(".tele").prop('checked');
-			entry.gauss = $(this).find(".gauss").prop('checked');
-			entry.jump = $(this).find(".jump").prop('checked');
-			entry.custom_jump = $(this).find(".custom_jump").val();
-		}
-		js_object.entries.push(entry);
-	})
-	return JSON.stringify(js_object);
-}
+/* global edit, utils, confirm */
+let savefile = (function () {
+  // VARIABLES
+  let currentSaveFile = ''
+  // EVENT DELEGATION
+  // "PRIVATE" FUNCTIONS
+  function tasToJson () {
+    let tasObject = {
+      'entries': [],
+      'boss_frame': document.getElementById('boss-frame').value,
+      'should_skip_dialogue': document.getElementById('cb-dialogue-skipping').checked,
+      'dialogue_skip_frame': document.getElementById('skip-frame').value,
+      'template-saves': '' // INSERT TEMPLATE SAVE HERE
+    }
 
-function save() {
-	if (write_to_file(current_save_file, tasToJSON())) {
-		flash_message_large("Saved!")
-	} else {
-		saveAs();
-	}
-}
+    let entries = document.querySelectorAll('.entry')
 
-function saveAs() {
-	dialog.showSaveDialog({ filters: [{ name: 'OTAS save file', extensions: ['otts'] },{ name: 'All files', extensions: ['*'] }]},(fileName) => {
-		if (fileName === undefined){
-			console.log("You didn't save the file");
-			return;
-		} else {
-			if(write_to_file(fileName, tasToJSON())) {
-				current_save_file = fileName;
-				flash_message_large("Saved!")
-			} else {
-				// FLASH ERROR MESSAGE
-			}
-		}
-	});
-}
+    for (let entryElement of entries) {
+      let entryObject = {}
 
-function jsonToTAS(data) {
-	$("#sortable").find(".entry").remove();
-	var js_object = JSON.parse(data);
-	for (var i = 0; i<js_object.entries.length;i++) {
-		var entry = js_object.entries[i];
-		var row;
-		if (entry.type == 'comment') {
-			row = createComment(entry.comment)
-		} else {
-			row = createActionRow(entry.frame);
-			$(row).find(".hor").val(entry.hor);
-			$(row).find(".ver").val(entry.ver);
-			$(row).find(".tele").prop('checked', entry.tele).checkboxradio("refresh");
-			$(row).find(".gauss").prop('checked', entry.gauss).checkboxradio("refresh");
-			$(row).find(".jump").prop('checked', entry.jump).checkboxradio("refresh");
-			$(row).find(".custom_jump").val(entry.custom_jump);
-		}
-		$("#sortable").append(row)
-		$(row).find('select').change()
-	}
-	$("#boss_frame").val(js_object['boss_frame'])
-	$('#skip_frame').val(js_object['dialogue_skip_frame'])
-	$('#cb_dialogue_skipping').prop('checked',js_object['should_skip_dialogue'])
-	toggle_dialogue_skipping()
-	load_template_saves(js_object['template-saves'])
-}
+      if (entryElement.classList.contains('comment')) {
+        entryObject.type = 'comment'
+        entryObject.comment = entryElement.querySelector('.comment-input').value
+      } else if (entryElement.classList.contains('action')) {
+        entryObject.type = 'action'
+        entryObject.frame = entryElement.querySelector('.frame-input').value
+        entryObject.hor = entryElement.querySelector('.hor').value
+        entryObject.ver = entryElement.querySelector('.ver').value
+        entryObject.tele = entryElement.querySelector('.tele').checked
+        entryObject.gauss = entryElement.querySelector('.gauss').checked
+        entryObject.jump = entryElement.querySelector('.jump').checked
+        entryObject.custom_jump = entryElement.querySelector('.custom-jump').value
+      }
+      tasObject.entries.push(entryObject)
+    }
 
-function loadFromFile() {
-	dialog.showOpenDialog({ filters: [{ name: 'OTAS save file', extensions: ['otts'] },{ name: 'All files', extensions: ['*'] }]},(filepath) => {
-		if(filepath === undefined || filepath[0] === undefined){
-			console.log("No file selected");
-			return;
-		}
+    return JSON.stringify(tasObject)
+  }
 
-		fs.readFile(filepath[0], 'utf-8', (err, data) => {
-			if(err){
-				alert("An error ocurred reading the file :" + err.message);
-				return;
-			}
-			jsonToTAS(data);
-			current_save_file = filepath[0]
-		});
-	});
-}
+  function jsonToTas (data) {
+    edit.clearAll()
 
-function clearTAS() {
-	$("#sortable").find(".entry").remove();
-	$('#boss_frame').val("")
-	$('#skip_frame').val(1)
-	$('#cb_dialogue_skipping').prop('checked',false)
-}
+    var tasObject = JSON.parse(data)
+    for (let entry of tasObject) {
+      if (entry.type === 'comment') {
+        edit.addCommentRow(entry.comment)
+      } else if (entry.type === 'action') {
+        let values = {
+          '.frame-input': entry.frame,
+          '.hor': entry.hor,
+          '.ver': entry.ver,
+          '.tele': entry.tele,
+          '.gauss': entry.gauss,
+          '.jump': entry.jump,
+          '.custom-jump': entry.custom_jump
+        }
+        edit.addActionRow(values)
+      }
+    }
 
-function newFile() {
-	// NEEDS REWRITING (NEW, BUT NOT SAVED FILES WILL BE WIPED)
-	// SHOULD PROBABLY ADD THE OPTION TO SAVE BEFORE CREATING NEW FILE
-	// THEN YOU COULD SIMPLY RUN THE save() METHOD WHICH WILL RUN saveAS()
-	// IF IT'S A BRAND NEW TAS
-	if (current_save_file) {
-		if (confirm("Are you sure you want to create a new file? \n(All unsaved changes will be lost)")) {
-			current_save_file = ""
-			clearTAS()
-		} else {
-			return;
-		}
-	} else {
-		clearTAS()
-	}
-}
+    document.getElementById('boss-frame').value = tasObject.boss_frame
+    document.getElementById('skip-frame').value = tasObject.dialogue_skip_frame
+    document.getElementById('cb-dialogue-skipping').checked = tasObject.should_skip_dialogue
+    // load_template_saves(js_object['template-saves'])
+  }
+
+  // EXPOSED FUNCTIONS
+  function save () {
+    if (utils.writeToFile(currentSaveFile, tasToJson())) {
+      utils.flashLargeMessage('Saved!')
+    } else {
+      saveAs()
+    }
+  }
+
+  function saveAs () {
+    let saveFilePath = utils.pathFromSaveDialog({
+      filters: [
+        { name: 'OTAS save file', extensions: ['otts'] },
+        { name: 'All files', extensions: ['*'] }
+      ]
+    })
+
+    if (saveFilePath === undefined) {
+      console.log('You didn\'t save the file')
+    } else {
+      if (utils.writeToFile(saveFilePath, tasToJson())) {
+        currentSaveFile = saveFilePath
+        utils.flashLargeMessage('Saved!')
+      } else {
+        // FLASH ERROR MESSAGE
+      }
+    }
+  }
+
+  function loadFromFile () {
+    let filePath = utils.getPathFromDialog({
+      filters: [
+        { name: 'OTAS save file', extensions: ['otts'] },
+        { name: 'All files', extensions: ['*'] }
+      ]
+    })
+
+    if (filePath === undefined) {
+      console.log('No file selected')
+    } else {
+      let saveDate = utils.readFromFile(filePath)
+      jsonToTas(saveDate)
+      currentSaveFile = filePath
+    }
+  }
+
+  function newFile () {
+    if (currentSaveFile || document.getElementById('tas-table-tbody').children.length) {
+      if (confirm('Are you sure you want to create a new file? \n(All unsaved changes will be lost)')) {
+        currentSaveFile = ''
+        edit.clearAll()
+      }
+    } else {
+      edit.clearAll()
+    }
+  }
+
+  return {
+    save: save,
+    saveAs: saveAs,
+    loadFromFile: loadFromFile,
+    newFile: newFile
+  }
+})()

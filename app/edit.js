@@ -98,6 +98,17 @@ let edit = (function () {
   }
 
   // EXPOSED FUNCTIONS
+  function clearTas () {
+    let tasTbody = document.getElementById('tas-table-tbody')
+    while (tasTbody.children.length) {
+      tasTbody.deleteRow(-1)
+    }
+    document.getElementById('boss-frame').value = ''
+    document.getElementById('skip-frame').value = 1
+    document.getElementById('cb-dialogue-skipping').checked = false
+    // CLEAR TEMPLATE SAVES!!!
+  }
+
   function addFramesBetween (start, end, delta) {
     let frameInputs = document.querySelectorAll('.action .frame-input')
     for (let frameInput of frameInputs) {
@@ -122,6 +133,7 @@ let edit = (function () {
   return {
     addFramesBetween: addFramesBetween,
     addActionRow: addAction,
-    addCommentRow: addComment
+    addCommentRow: addComment,
+    clearAll: clearTas
   }
 })()
